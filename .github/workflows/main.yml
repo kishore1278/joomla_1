@@ -1,0 +1,45 @@
+name: Deploy to EC2
+
+ 
+
+on:
+  push:
+    branches:
+      - master
+
+ 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+ 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Print Current Directory
+        run: |
+          echo "Current directory: $PWD"
+          echo "inside the directory: $ls"
+ 
+
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          whoami
+          echo "${{ secrets.JOOMLA_AZURE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa    
+          ssh-keyscan 52.149.213.58 >> /home/runner/.ssh/known_hosts
+          cat '/home/runner/.ssh/known_hosts'
+          echo "end of ssh key setup"
+ 
+
+      - name: Connect to EC2 and Run Commands
+        run: |
+          ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58
+           echo "connection made"
+     # - name: Connect to EC2 and Copy Files
+     #   run: |
+        #  ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58 "mkdir -p /var/www/html/ && cd /var/www/html/ && rm -rf * && git init && git clone https://github.com/kishore1278/joomla_aws.git && cd joomla_aws && chmod +x dp.sh && ./dp.sh"
+          
