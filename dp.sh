@@ -3,19 +3,23 @@
 # Navigate to the Joomla installation directory
 cd /var/www/html/joomla
 
+sudo apt update
+sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-curl php-gd php-intl php-json php-mbstring php-xml php-zip unzip
+
+
 # Set appropriate file permissions
 chmod -R 755 *
 chmod -R 644 .htaccess
 
-# Create a configuration.php file (replace placeholders)
-#cp installation/configuration.php-dist configuration.php
-#sed -i 's/root/' configuration.php
-#sed -i 's/admin123/' configuration.php
-#sed -i 's/joomla_db/' configuration.php
+sudo mysql_secure_installation -y
 
-# Remove the installation directory (if not done during Joomla installation)
-#rm -rf installation/
 
-# Exit script
-exit 0
+CREATE DATABASE joomla_db;
+CREATE USER 'root'@'localhost' IDENTIFIED BY '8886083580@Yu';
+GRANT ALL PRIVILEGES ON joomla_db.* TO 'root'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+sudo chown -R www-data:www-data joomla
+
 #done
