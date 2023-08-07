@@ -39,7 +39,7 @@ jobs:
         run: |
           ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58
            echo "connection made"
-      - name: Connect to EC2 and Copy Files
-        run: |
-          ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58 "mkdir -p /var/www/html/ && cd /var/www/html/ && git pull https://github.com/kishore1278/joomla.git main && cd joomla && chmod +x dp.sh && ./dp.sh"
+      #- name: Connect to EC2 and Copy Files
+       # run: |
+        #  ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58 "mkdir -p /var/www/html/ && cd /var/www/html/ && git pull https://github.com/kishore1278/joomla.git main && cd joomla && chmod +x dp.sh && ./dp.sh"
           
