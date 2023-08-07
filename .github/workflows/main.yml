@@ -1,43 +1,45 @@
 name: Deploy to EC2
 
+ 
+
 on:
   push:
     branches:
       - master
 
+ 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
+ 
+
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-          extensions: 'mbstring, xml, zip, gd, pdo_mysql'
-
-      - name: Install Composer
+      - name: Print Current Directory
         run: |
-          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-          php composer-setup.php
-          php -r "unlink('composer-setup.php');"
+          echo "Current directory: $PWD"
+          echo "inside the directory: $ls"
+ 
 
-      - name: Install Joomla Dependencies
+      - name: Set up SSH Key
         run: |
-          composer install
+          mkdir -p ~/.ssh
+          whoami
+          echo "${{ secrets.JOOMLA_AZURE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa    
+          ssh-keyscan 52.149.213.58 >> /home/runner/.ssh/known_hosts
+          cat '/home/runner/.ssh/known_hosts'
+          echo "end of ssh key setup"
+ 
 
-      - name: Deploy to Azure VM
+      - name: Connect to EC2 and Run Commands
         run: |
           ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58
            echo "connection made"
-          script: |
-            # Clone your Joomla repository
-            git clone https://github.com/kishore1278/joomla.git /var/www/html/joomla
-            
-            # Run Joomla deployment script
-            cd /var/www/html/joomla
-            chmod +x deploy.sh
-            ./deploy.sh
+      - name: Connect to EC2 and Copy Files
+        run: |
+          ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58 "mkdir -p /var/www/html/ && cd /var/www/html/ && rm -rf * && git init && git clone https://github.com/kishore1278/joomla.git && cd joomla && chmod +x dp.sh && ./dp.sh"
+          
