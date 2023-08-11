@@ -1221,7 +1221,9 @@ class PlgSampledataMultilang extends CMSPlugin
 
         $db->setQuery($query);
 
-        return $db->loadColumn();
+        $this->langlist = $db->loadColumn();
+
+        return $this->langlist;
     }
 
     /**
@@ -1267,7 +1269,9 @@ class PlgSampledataMultilang extends CMSPlugin
      */
     protected function getClient($client = 'administrator')
     {
-        return ApplicationHelper::getClientInfo($client, true);
+        $this->client = ApplicationHelper::getClientInfo($client, true);
+
+        return $this->client;
     }
 
     /**

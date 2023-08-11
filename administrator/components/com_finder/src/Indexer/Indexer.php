@@ -966,15 +966,7 @@ class Indexer
      */
     protected function toggleTables($memory)
     {
-        static $supported = true;
-
-        if (!$supported) {
-            return true;
-        }
-
         if (strtolower($this->db->getServerType()) != 'mysql') {
-            $supported = false;
-
             return true;
         }
 
@@ -985,19 +977,13 @@ class Indexer
 
         // Check if we are setting the tables to the Memory engine.
         if ($memory === true && $state !== true) {
-            try {
-                // Set the tokens table to Memory.
-                $db->setQuery('ALTER TABLE ' . $db->quoteName('#__finder_tokens') . ' ENGINE = MEMORY');
-                $db->execute();
+            // Set the tokens table to Memory.
+            $db->setQuery('ALTER TABLE ' . $db->quoteName('#__finder_tokens') . ' ENGINE = MEMORY');
+            $db->execute();
 
-                // Set the tokens aggregate table to Memory.
-                $db->setQuery('ALTER TABLE ' . $db->quoteName('#__finder_tokens_aggregate') . ' ENGINE = MEMORY');
-                $db->execute();
-            } catch (\RuntimeException $e) {
-                $supported = false;
-
-                return true;
-            }
+            // Set the tokens aggregate table to Memory.
+            $db->setQuery('ALTER TABLE ' . $db->quoteName('#__finder_tokens_aggregate') . ' ENGINE = MEMORY');
+            $db->execute();
 
             // Set the internal state.
             $state = $memory;

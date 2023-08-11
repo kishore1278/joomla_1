@@ -13,7 +13,6 @@ namespace Joomla\Component\Media\Administrator\Model;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -231,7 +230,7 @@ class ApiModel extends BaseDatabaseModel
 
         // Check if it is a media file
         if (!$this->isMediaFile($path . '/' . $name)) {
-            throw new InvalidPathException(Text::_('JLIB_MEDIA_ERROR_WARNFILETYPE'));
+            throw new InvalidPathException();
         }
 
         $app               = Factory::getApplication();

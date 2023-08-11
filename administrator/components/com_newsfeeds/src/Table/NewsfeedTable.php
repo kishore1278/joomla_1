@@ -115,7 +115,7 @@ class NewsfeedTable extends Table implements VersionableTableInterface, Taggable
             $this->metadesc = StringHelper::str_ireplace($bad_characters, '', $this->metadesc);
         }
 
-        if (!$this->hits) {
+        if (is_null($this->hits)) {
             $this->hits = 0;
         }
 

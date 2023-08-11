@@ -87,22 +87,8 @@ function applyIsChecked(event) {
     Joomla.isChecked(item.checked);
   }
 }
-
-/*
- * Set up an interactive list elements
- *
- * @param {Event} event
- */
-const setup = ({
-  target
-}) => {
-  target.querySelectorAll('.js-grid-item-check-all').forEach(element => element.addEventListener('click', event => Joomla.checkAll(event.target)));
-  target.querySelectorAll('.js-grid-item-is-checked').forEach(element => element.addEventListener('click', applyIsChecked));
-  target.querySelectorAll('.js-grid-item-action').forEach(element => element.addEventListener('click', gridItemAction));
-  target.querySelectorAll('.js-grid-item-transition-action').forEach(element => element.addEventListener('change', gridTransitionItemAction));
-  target.querySelectorAll('.js-grid-button-transition-action').forEach(element => element.addEventListener('click', gridTransitionButtonAction));
-};
-setup({
-  target: document
-});
-document.addEventListener('joomla:updated', setup);
+document.querySelectorAll('.js-grid-item-check-all').forEach(element => element.addEventListener('click', event => Joomla.checkAll(event.target)));
+document.querySelectorAll('.js-grid-item-is-checked').forEach(element => element.addEventListener('click', applyIsChecked));
+document.querySelectorAll('.js-grid-item-action').forEach(element => element.addEventListener('click', gridItemAction));
+document.querySelectorAll('.js-grid-item-transition-action').forEach(element => element.addEventListener('change', gridTransitionItemAction));
+document.querySelectorAll('.js-grid-button-transition-action').forEach(element => element.addEventListener('click', gridTransitionButtonAction));

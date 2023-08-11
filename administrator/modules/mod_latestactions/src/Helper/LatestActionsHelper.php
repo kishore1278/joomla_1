@@ -27,7 +27,7 @@ use Joomla\Registry\Registry;
 abstract class LatestActionsHelper
 {
     /**
-     * Get a list of logged actions.
+     * Get a list of articles.
      *
      * @param   Registry  &$params  The module parameters.
      *

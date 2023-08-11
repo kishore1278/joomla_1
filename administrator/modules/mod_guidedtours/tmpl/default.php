@@ -27,7 +27,7 @@ $app->getDocument()
 
 $lang = $app->getLanguage();
 
-$extension = $app->getInput()->get('option');
+$extension = $app->input->get('option');
 
 $listTours = [];
 $allTours = [];
@@ -51,6 +51,8 @@ foreach ($tours as $tour) :
 
     $allTours[$key][] = $tour;
 endforeach;
+
+ksort($allTours);
 
 ?>
 <div class="header-item-content dropdown header-tours d-none d-sm-block">

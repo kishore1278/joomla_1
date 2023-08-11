@@ -18,14 +18,14 @@ use Joomla\CMS\Dispatcher\ComponentDispatcher;
 // phpcs:enable PSR1.Files.SideEffects
 
 /**
- * ComponentDispatcher class for com_actionlogs
+ * ComponentDispatcher class for com_admin
  *
  * @since  4.2.7
  */
 class Dispatcher extends ComponentDispatcher
 {
     /**
-     * Method to check component access permission
+     * com_admin does not require check permission, so we override checkAccess method and have it empty
      *
      * @return  void
      *

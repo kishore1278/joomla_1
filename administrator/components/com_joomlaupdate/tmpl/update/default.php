@@ -11,6 +11,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Help\Help;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
@@ -54,7 +55,7 @@ $this->document->addScriptOptions(
     ]
 );
 
-$helpUrl = 'https://docs.joomla.org/Special:MyLanguage/J4.x:Joomla_Update_Problems';
+$helpUrl = Help::createUrl('JHELP_COMPONENTS_JOOMLA_UPDATE', false);
 ?>
 
 <div class="px-4 py-5 my-5 text-center" id="joomlaupdate-progress">

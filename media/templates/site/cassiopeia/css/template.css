@@ -7,7 +7,6 @@
  */
 :root {
   --blue: hsl(240, 98%, 17%);
-  --black: hsl(0, 0%, 0%);
   --indigo: hsl(263, 90%, 51%);
   --purple: hsl(261, 51%, 51%);
   --pink: hsl(332, 79%, 58%);
@@ -218,7 +217,7 @@ small, .small {
 }
 
 mark, .mark {
-  padding: 0.1875em 0;
+  padding: 0.1875em;
   background-color: var(--highlight-bg);
 }
 
@@ -12304,7 +12303,7 @@ a {
 a:not([class]) {
   text-decoration: underline;
 }
-a:not(.btn):hover, a:not(.btn):focus {
+a:hover, a:focus {
   color: var(--cassiopeia-color-hover);
 }
 a.navbar-brand {

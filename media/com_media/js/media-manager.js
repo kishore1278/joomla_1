@@ -6839,7 +6839,7 @@ const notifications = {
 var navigable = {
   methods: {
     navigateTo(path) {
-      this.$store.dispatch('getContents', path, false, false);
+      this.$store.dispatch('getContents', path);
     }
   }
 };
@@ -7271,29 +7271,31 @@ class Api {
 
   /**
      * Get the contents of a directory from the server
-     * @param {string}   dir  The directory path
-     * @param {boolean}  full whether or not the persistent url should be returned
-     * @param {boolean}  content whether or not the content should be returned
+     * @param {string}  dir  The directory path
+     * @param {number}  full whether or not the persistent url should be returned
+     * @param {number}  content whether or not the content should be returned
      * @returns {Promise}
      */
   getContents(dir, full, content) {
-    if (full === void 0) {
-      full = false;
-    }
-    if (content === void 0) {
-      content = false;
-    }
     // Wrap the ajax call into a real promise
     return new Promise((resolve, reject) => {
-      const url = new URL(`${this.baseUrl}&task=api.files&path=${encodeURIComponent(dir)}`);
+      // Do a check on full
+      if (['0', '1'].indexOf(full) !== -1) {
+        throw Error('Invalid parameter: full');
+      }
+      // Do a check on download
+      if (['0', '1'].indexOf(content) !== -1) {
+        throw Error('Invalid parameter: content');
+      }
+      let url = `${this.baseUrl}&task=api.files&path=${encodeURIComponent(dir)}`;
       if (full) {
-        url.searchParams.append('url', full);
+        url += `&url=${full}`;
       }
       if (content) {
-        url.searchParams.append('content', content);
+        url += `&content=${content}`;
       }
       Joomla.request({
-        url: url.toString(),
+        url,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -7317,13 +7319,13 @@ class Api {
   createDirectory(name, parent) {
     // Wrap the ajax call into a real promise
     return new Promise((resolve, reject) => {
-      const url = new URL(`${this.baseUrl}&task=api.files&path=${encodeURIComponent(parent)}`);
+      const url = `${this.baseUrl}&task=api.files&path=${encodeURIComponent(parent)}`;
       const data = {
         [this.csrfToken]: '1',
         name
       };
       Joomla.request({
-        url: url.toString(),
+        url,
         method: 'POST',
         data: JSON.stringify(data),
         headers: {
@@ -7352,7 +7354,7 @@ class Api {
   upload(name, parent, content, override) {
     // Wrap the ajax call into a real promise
     return new Promise((resolve, reject) => {
-      const url = new URL(`${this.baseUrl}&task=api.files&path=${encodeURIComponent(parent)}`);
+      const url = `${this.baseUrl}&task=api.files&path=${encodeURIComponent(parent)}`;
       const data = {
         [this.csrfToken]: '1',
         name,
@@ -7364,7 +7366,7 @@ class Api {
         data.override = true;
       }
       Joomla.request({
-        url: url.toString(),
+        url,
         method: 'POST',
         data: JSON.stringify(data),
         headers: {
@@ -7390,13 +7392,13 @@ class Api {
   rename(path, newPath) {
     // Wrap the ajax call into a real promise
     return new Promise((resolve, reject) => {
-      const url = new URL(`${this.baseUrl}&task=api.files&path=${encodeURIComponent(path)}`);
+      const url = `${this.baseUrl}&task=api.files&path=${encodeURIComponent(path)}`;
       const data = {
         [this.csrfToken]: '1',
         newPath
       };
       Joomla.request({
-        url: url.toString(),
+        url,
         method: 'PUT',
         data: JSON.stringify(data),
         headers: {
@@ -7422,12 +7424,12 @@ class Api {
   delete(path) {
     // Wrap the ajax call into a real promise
     return new Promise((resolve, reject) => {
-      const url = new URL(`${this.baseUrl}&task=api.files&path=${encodeURIComponent(path)}`);
+      const url = `${this.baseUrl}&task=api.files&path=${encodeURIComponent(path)}`;
       const data = {
         [this.csrfToken]: '1'
       };
       Joomla.request({
-        url: url.toString(),
+        url,
         method: 'DELETE',
         data: JSON.stringify(data),
         headers: {
@@ -8322,7 +8324,7 @@ var script$j = {
       }
 
       return this.item.thumb_path.split(Joomla.getOptions('system.paths').rootFull).length > 1
-        ? `${this.item.thumb_path}?${this.item.modified_date ? new Date(this.item.modified_date).valueOf() : api.mediaVersion}`
+        ? `${this.item.thumb_path}?${api.mediaVersion}`
         : `${this.item.thumb_path}`;
     },
     width() {
@@ -8821,8 +8823,7 @@ var MediaBrowserItem = {
       onMouseleave: this.mouseleave
     }, [h(this.itemType(), {
       item: this.item,
-      onToggleSettings: this.toggleSettings,
-      focused: false
+      onToggleSettings: this.toggleSettings
     })]);
   }
 };
@@ -11687,7 +11688,7 @@ var script = {
     });
 
     // Initial load the data
-    this.$store.dispatch('getContents', this.$store.state.selectedDirectory, false, false);
+    this.$store.dispatch('getContents', this.$store.state.selectedDirectory);
   },
   beforeUnmount() {
     // Remove the global resize event listener
@@ -11720,8 +11721,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     createBaseVNode("div", _hoisted_2, [
       (openBlock(true), createElementBlock(Fragment, null, renderList($options.disks, (disk, index) => {
         return (openBlock(), createBlock(_component_MediaDisk, {
-          key: index.toString(),
-          uid: index.toString(),
+          key: index,
+          uid: index,
           disk: disk
         }, null, 8 /* PROPS */, ["uid", "disk"]))
       }), 128 /* KEYED_FRAGMENT */))
@@ -13228,50 +13229,33 @@ const defaultDisk = loadedDisks.find(disk => disk.drives.length > 0 && disk.driv
 if (!defaultDisk) {
   throw new TypeError('No default media drive was found');
 }
+let currentPath;
 const storedState = JSON.parse(persistedStateOptions.storage.getItem(persistedStateOptions.key));
-function setSession(path) {
-  persistedStateOptions.storage.setItem(persistedStateOptions.key, JSON.stringify({
-    ...storedState,
-    ...{
-      selectedDirectory: path
-    }
-  }));
-}
 
 // Gracefully use the given path, the session storage state or fall back to sensible default
-function getCurrentPath() {
-  let path = options.currentPath;
-
-  // Set the path from the session when available
-  if (!path && storedState && storedState.selectedDirectory) {
-    path = storedState.selectedDirectory;
+if (options.currentPath) {
+  let useDrive = false;
+  Object.values(loadedDisks).forEach(drive => drive.drives.forEach(curDrive => {
+    if (options.currentPath.indexOf(curDrive.root) === 0) {
+      useDrive = true;
+    }
+  }));
+  if (useDrive) {
+    if (storedState && storedState.selectedDirectory && storedState.selectedDirectory !== options.currentPath) {
+      storedState.selectedDirectory = options.currentPath;
+      persistedStateOptions.storage.setItem(persistedStateOptions.key, JSON.stringify(storedState));
+      currentPath = options.currentPath;
+    } else {
+      currentPath = options.currentPath;
+    }
+  } else {
+    currentPath = defaultDisk.drives[0].root;
   }
-
-  // No path available, use the root of the first drive
-  if (!path) {
-    setSession(defaultDisk.drives[0].root);
-    return defaultDisk.drives[0].root;
-  }
-
-  // Get the fragments
-  const fragment = path.split(':/');
-
-  // Check that we have a drive
-  if (!fragment.length) {
-    setSession(defaultDisk.drives[0].root);
-    return defaultDisk.drives[0].root;
-  }
-  const drivesTmp = Object.values(loadedDisks).map(drive => drive.drives);
-
-  // Drive doesn't exist
-  if (!drivesTmp.flat().find(drive => drive.root.startsWith(fragment[0]))) {
-    setSession(defaultDisk.drives[0].root);
-    return defaultDisk.drives[0].root;
-  }
-
-  // Session missmatch
-  setSession(path);
-  return path;
+} else if (storedState && storedState.selectedDirectory) {
+  currentPath = storedState.selectedDirectory;
+}
+if (!currentPath) {
+  currentPath = defaultDisk.drives[0].root;
 }
 
 // The initial state
@@ -13292,7 +13276,7 @@ var state = {
   files: [],
   // The selected disk. Providers are ordered by plugin ordering, so we set the first provider
   // in the list as the default provider and load first drive on it as default
-  selectedDirectory: getCurrentPath(),
+  selectedDirectory: currentPath,
   // The currently selected items
   selectedItems: [],
   // The state of the infobar
@@ -13387,7 +13371,7 @@ const getContents = (context, payload) => {
   // Update the url
   updateUrlPath(payload);
   context.commit(SET_IS_LOADING, true);
-  api.getContents(payload, false, false).then(contents => {
+  api.getContents(payload, 0).then(contents => {
     context.commit(LOAD_CONTENTS_SUCCESS, contents);
     context.commit(UNSELECT_ALL_BROWSER_ITEMS);
     context.commit(SELECT_DIRECTORY, payload);
@@ -13406,7 +13390,7 @@ const getContents = (context, payload) => {
  */
 const getFullContents = (context, payload) => {
   context.commit(SET_IS_LOADING, true);
-  api.getContents(payload.path, true, true).then(contents => {
+  api.getContents(payload.path, 1).then(contents => {
     context.commit(LOAD_FULL_CONTENTS_SUCCESS, contents.files[0]);
     context.commit(SET_IS_LOADING, false);
   }).catch(error => {
@@ -13422,7 +13406,7 @@ const getFullContents = (context, payload) => {
  * @param payload
  */
 const download = (context, payload) => {
-  api.getContents(payload.path, false, true).then(contents => {
+  api.getContents(payload.path, 0, 1).then(contents => {
     const file = contents.files[0];
 
     // Download file

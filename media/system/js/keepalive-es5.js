@@ -27,9 +27,7 @@
     keepAliveUri = (systemPaths ? systemPaths.root + "/index.php" : window.location.pathname) + "?option=com_ajax&format=json";
   }
   setInterval(function () {
-    return fetch(keepAliveUri, {
-      method: 'POST'
-    });
+    return navigator.sendBeacon(keepAliveUri);
   }, keepAliveInterval);
 
 })();

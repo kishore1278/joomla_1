@@ -8,10 +8,9 @@
 
   (function () {
     document.addEventListener('DOMContentLoaded', function () {
-      var _document$getElementB;
       var elCodeField = document.getElementById('users-mfa-code');
       var elValidateButton = document.getElementById('users-mfa-captive-button-submit');
-      var elToolbarButton = (_document$getElementB = document.getElementById('toolbar-user-mfa-submit')) == null ? void 0 : _document$getElementB.querySelector('button');
+      var elToolbarButton = document.getElementById('toolbar-user-mfa-submit').querySelector('button');
 
       // Focus the code field. If the code field is hidden, focus the submit button (useful e.g. for WebAuthn)
       if (elCodeField && elCodeField.style.display !== 'none' && !elCodeField.classList.contains('visually-hidden') && elCodeField.type !== 'hidden') {

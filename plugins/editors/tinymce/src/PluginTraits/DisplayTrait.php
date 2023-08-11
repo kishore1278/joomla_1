@@ -390,9 +390,7 @@ trait DisplayTrait
                     $ctemp[] = ['title' => $content_language['content_language_name'], 'code' => $content_language['content_language_code']];
                 }
             }
-            if (isset($ctemp)) {
-                $scriptOptions['content_langs'] = array_merge($ctemp);
-            }
+            $scriptOptions['content_langs'] = array_merge($ctemp);
         }
 
         // User custom plugins and buttons
@@ -480,9 +478,6 @@ trait DisplayTrait
 
                 // Disable TinyMCE Branding
                 'branding' => false,
-
-                // Specify the attributes to be used when previewing a style. This prevents white text on a white background making the preview invisible.
-                'preview_styles' => 'font-family font-size font-weight font-style text-decoration text-transform background-color border border-radius outline text-shadow',
             ]
         );
 

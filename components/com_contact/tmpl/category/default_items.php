@@ -85,21 +85,23 @@ $listDirn   = $this->escape($this->state->get('list.direction'));
                 <caption class="visually-hidden">
                     <?php echo Text::_('COM_CONTACT_TABLE_CAPTION'); ?>,
                 </caption>
-                <thead<?php echo $this->params->get('show_headings', '1') ? '' : ' class="visually-hidden"'; ?>>
-                    <tr>
-                        <th scope="col" id="categorylist_header_title">
-                            <?php echo HTMLHelper::_('grid.sort', 'JGLOBAL_TITLE', 'a.name', $listDirn, $listOrder, null, 'asc', '', 'adminForm'); ?>
-                        </th>
-                        <th scope="col">
-                            <?php echo Text::_('COM_CONTACT_CONTACT_DETAILS'); ?>
-                        </th>
-                        <?php if ($showEditColumn) : ?>
-                            <th scope="col">
-                                <?php echo Text::_('COM_CONTACT_EDIT_CONTACT'); ?>
+                <?php if ($this->params->get('show_headings')) : ?>
+                    <thead>
+                        <tr>
+                            <th scope="col" id="categorylist_header_title">
+                                <?php echo HTMLHelper::_('grid.sort', 'JGLOBAL_TITLE', 'a.name', $listDirn, $listOrder, null, 'asc', '', 'adminForm'); ?>
                             </th>
-                        <?php endif; ?>
-                    </tr>
-                </thead>
+                            <th scope="col">
+                                <?php echo Text::_('COM_CONTACT_CONTACT_DETAILS'); ?>
+                            </th>
+                            <?php if ($showEditColumn) : ?>
+                                <th scope="col">
+                                    <?php echo Text::_('COM_CONTACT_EDIT_CONTACT'); ?>
+                                </th>
+                            <?php endif; ?>
+                        </tr>
+                    </thead>
+                <?php endif; ?>
                 <tbody>
                     <?php foreach ($this->items as $i => $item) : ?>
                         <?php if ($this->items[$i]->published == 0) : ?>

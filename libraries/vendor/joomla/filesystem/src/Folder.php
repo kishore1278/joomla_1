@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Filesystem Package
  *
- * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -260,7 +260,7 @@ abstract class Folder
 		}
 
 		// Remove all the files in folder if they exist; disable all filtering
-		$files = self::files($path, '.', false, true, array(), array());
+		$files = self::files($path, '.', false, true, [], []);
 
 		if (!empty($files))
 		{
@@ -272,7 +272,7 @@ abstract class Folder
 		}
 
 		// Remove sub-folders of folder; disable all filtering
-		$folders = self::folders($path, '.', false, true, array(), array());
+		$folders = self::folders($path, '.', false, true, [], []);
 
 		foreach ($folders as $folder)
 		{
@@ -361,8 +361,8 @@ abstract class Folder
 	 * @since   1.0
 	 * @throws  \UnexpectedValueException
 	 */
-	public static function files($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
-		$excludeFilter = array('^\..*', '.*~')
+	public static function files($path, $filter = '.', $recurse = false, $full = false, $exclude = ['.svn', 'CVS', '.DS_Store', '__MACOSX'],
+		$excludeFilter = ['^\..*', '.*~']
 	)
 	{
 		// Check to make sure the path valid and clean
@@ -414,8 +414,8 @@ abstract class Folder
 	 * @since   1.0
 	 * @throws  \UnexpectedValueException
 	 */
-	public static function folders($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
-		$excludeFilter = array('^\..*')
+	public static function folders($path, $filter = '.', $recurse = false, $full = false, $exclude = ['.svn', 'CVS', '.DS_Store', '__MACOSX'],
+		$excludeFilter = ['^\..*']
 	)
 	{
 		// Check to make sure the path valid and clean
@@ -471,7 +471,7 @@ abstract class Folder
 	{
 		@set_time_limit(ini_get('max_execution_time'));
 
-		$arr = array();
+		$arr = [];
 
 		// Read the source directory
 		if (!($handle = @opendir($path)))
@@ -541,7 +541,7 @@ abstract class Folder
 	 */
 	public static function listFolderTree($path, $filter, $maxLevel = 3, $level = 0, $parent = 0)
 	{
-		$dirs = array();
+		$dirs = [];
 
 		if ($level == 0)
 		{
@@ -557,13 +557,13 @@ abstract class Folder
 			{
 				$id       = ++$GLOBALS['_JFolder_folder_tree_index'];
 				$fullName = Path::clean($path . '/' . $name);
-				$dirs[]   = array(
+				$dirs[]   = [
 					'id'       => $id,
 					'parent'   => $parent,
 					'name'     => $name,
 					'fullname' => $fullName,
 					'relname'  => str_replace(JPATH_ROOT, '', $fullName),
-				);
+				];
 				$dirs2 = self::listFolderTree($fullName, $filter, $maxLevel, $level + 1, $id);
 				$dirs  = array_merge($dirs, $dirs2);
 			}
@@ -583,7 +583,7 @@ abstract class Folder
 	 */
 	public static function makeSafe($path)
 	{
-		$regex = array('#[^A-Za-z0-9_\\\/\(\)\[\]\{\}\#\$\^\+\.\'~`!@&=;,-]#');
+		$regex = ['#[^A-Za-z0-9_\\\/\(\)\[\]\{\}\#\$\^\+\.\'~`!@&=;,-]#'];
 
 		return preg_replace($regex, '', $path);
 	}

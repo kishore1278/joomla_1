@@ -53,6 +53,7 @@ abstract class Category
             $config = (array) $config;
             $db     = Factory::getDbo();
             $user   = Factory::getUser();
+            $groups = $user->getAuthorisedViewLevels();
 
             $query = $db->getQuery(true)
                 ->select(
@@ -71,9 +72,7 @@ abstract class Category
                 ->bind(':extension', $extension);
 
             // Filter on user access level
-            if (!$user->authorise('core.admin')) {
-                $query->whereIn($db->quoteName('a.access'), $user->getAuthorisedViewLevels());
-            }
+            $query->whereIn($db->quoteName('a.access'), $groups);
 
             // Filter on the published state
             if (isset($config['filter.published'])) {
@@ -166,9 +165,8 @@ abstract class Category
                 ->bind(':extension', $extension);
 
             // Filter on user level.
-            if (!$user->authorise('core.admin')) {
-                $query->whereIn($db->quoteName('a.access'), $user->getAuthorisedViewLevels());
-            }
+            $groups = $user->getAuthorisedViewLevels();
+            $query->whereIn($db->quoteName('a.access'), $groups);
 
             // Filter on the published state
             if (isset($config['filter.published'])) {

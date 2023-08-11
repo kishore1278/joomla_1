@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Layout\LayoutHelper;
 
-$published = (int) $this->state->get('filter.published');
+$published = $this->state->get('filter.published');
 $noUser    = true;
 ?>
 

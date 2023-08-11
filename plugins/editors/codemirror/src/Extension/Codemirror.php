@@ -10,7 +10,6 @@
 
 namespace Joomla\Plugin\Editors\CodeMirror\Extension;
 
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -238,8 +237,7 @@ final class Codemirror extends CMSPlugin
         }
 
         if ($options->keyMap !== 'default') {
-            $keyMapUrl = HTMLHelper::_('script', $this->basePath . 'keymap/' . $options->keyMap . '.min.js', ['relative' => false, 'pathOnly' => true]);
-            $keyMapUrl .= '?' . $this->getApplication()->getDocument()->getMediaVersion();
+            $keyMapUrl = $this->basePath . 'keymap/' . $options->keyMap . '.min.js';
         }
 
         $options->keyMapUrl = $keyMapUrl;

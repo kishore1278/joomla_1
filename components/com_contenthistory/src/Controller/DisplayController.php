@@ -20,7 +20,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 // phpcs:enable PSR1.Files.SideEffects
 
 /**
- * History manager display controller.
+ * History manager master display controller.
  *
  * @since  4.0.0
  */

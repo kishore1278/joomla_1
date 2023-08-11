@@ -12,6 +12,8 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Layout\LayoutHelper;
+
+$published = $this->state->get('filter.published');
 ?>
 
 <div class="p-3">

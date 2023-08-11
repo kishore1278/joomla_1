@@ -78,35 +78,22 @@
       Joomla.isChecked(item.checked);
     }
   }
-
-  /*
-   * Set up an interactive list elements
-   *
-   * @param {Event} event
-   */
-  var setup = function setup(_ref) {
-    var target = _ref.target;
-    target.querySelectorAll('.js-grid-item-check-all').forEach(function (element) {
-      return element.addEventListener('click', function (event) {
-        return Joomla.checkAll(event.target);
-      });
+  document.querySelectorAll('.js-grid-item-check-all').forEach(function (element) {
+    return element.addEventListener('click', function (event) {
+      return Joomla.checkAll(event.target);
     });
-    target.querySelectorAll('.js-grid-item-is-checked').forEach(function (element) {
-      return element.addEventListener('click', applyIsChecked);
-    });
-    target.querySelectorAll('.js-grid-item-action').forEach(function (element) {
-      return element.addEventListener('click', gridItemAction);
-    });
-    target.querySelectorAll('.js-grid-item-transition-action').forEach(function (element) {
-      return element.addEventListener('change', gridTransitionItemAction);
-    });
-    target.querySelectorAll('.js-grid-button-transition-action').forEach(function (element) {
-      return element.addEventListener('click', gridTransitionButtonAction);
-    });
-  };
-  setup({
-    target: document
   });
-  document.addEventListener('joomla:updated', setup);
+  document.querySelectorAll('.js-grid-item-is-checked').forEach(function (element) {
+    return element.addEventListener('click', applyIsChecked);
+  });
+  document.querySelectorAll('.js-grid-item-action').forEach(function (element) {
+    return element.addEventListener('click', gridItemAction);
+  });
+  document.querySelectorAll('.js-grid-item-transition-action').forEach(function (element) {
+    return element.addEventListener('change', gridTransitionItemAction);
+  });
+  document.querySelectorAll('.js-grid-button-transition-action').forEach(function (element) {
+    return element.addEventListener('click', gridTransitionButtonAction);
+  });
 
 })();

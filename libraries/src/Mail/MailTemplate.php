@@ -327,9 +327,8 @@ class MailTemplate
         foreach ($tags as $key => $value) {
             if (is_array($value)) {
                 $matches = [];
-                $pregKey = preg_quote(strtoupper($key), '/');
 
-                if (preg_match_all('/{' . $pregKey . '}(.*?){\/' . $pregKey . '}/s', $text, $matches)) {
+                if (preg_match_all('/{' . strtoupper($key) . '}(.*?){\/' . strtoupper($key) . '}/s', $text, $matches)) {
                     foreach ($matches[0] as $i => $match) {
                         $replacement = '';
 
@@ -407,10 +406,9 @@ class MailTemplate
         $template->subject     = $subject;
         $template->body        = $body;
         $template->htmlbody    = $htmlbody;
-        $template->extension   = explode('.', $key, 2)[0] ?? '';
         $template->attachments = '';
         $params                = new \stdClass();
-        $params->tags          = (array) $tags;
+        $params->tags          = [$tags];
         $template->params      = json_encode($params);
 
         return $db->insertObject('#__mail_templates', $template);
@@ -440,7 +438,7 @@ class MailTemplate
         $template->body        = $body;
         $template->htmlbody    = $htmlbody;
         $params                = new \stdClass();
-        $params->tags          = (array) $tags;
+        $params->tags          = [$tags];
         $template->params      = json_encode($params);
 
         return $db->updateObject('#__mail_templates', $template, ['template_id', 'language']);
