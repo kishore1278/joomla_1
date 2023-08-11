@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Site
  * @subpackage  Layout
@@ -11,8 +10,6 @@
 defined('_JEXEC') or die;
 
 extract($displayData);
-
-use Joomla\CMS\HTML\HTMLHelper;
 
 /**
  * Layout variables
@@ -41,37 +38,40 @@ use Joomla\CMS\HTML\HTMLHelper;
  * @var   string   $validate        Validation rules to apply.
  * @var   string   $value           Value attribute of the field.
  * @var   array    $options         Options available for this field.
- * @var   string   $dataAttribute   Miscellaneous data attributes preprocessed for HTML output
- * @var   array    $dataAttributes  Miscellaneous data attribute for eg, data-*.
  */
 
-HTMLHelper::_('behavior.combobox');
+// Including fallback code for HTML5 non supported browsers.
+JHtml::_('jquery.framework');
+JHtml::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relative' => true, 'conditional' => 'lt IE 9'));
+JHtml::_('behavior.combobox');
 
-$attr = '';
-
-// Initialize some field attributes.
-$attr .= !empty($class) ? ' class="awesomplete form-control ' . $class . '"' : ' class="awesomplete form-control"';
+$attr  = !empty($class) ? ' class="combobox ' . $class . '"' : ' class="combobox"';
 $attr .= !empty($size) ? ' size="' . $size . '"' : '';
 $attr .= !empty($readonly) ? ' readonly' : '';
 $attr .= !empty($disabled) ? ' disabled' : '';
-$attr .= !empty($required) ? ' required' : '';
-$attr .= !empty($description) ? ' aria-describedby="' . ($id ?: $name) . '-desc"' : '';
+$attr .= !empty($required) ? ' required aria-required="true"' : '';
 
 // Initialize JavaScript field attributes.
 $attr .= !empty($onchange) ? ' onchange="' . $onchange . '"' : '';
 
-$val  = [];
-
-foreach ($options as $option) {
-    $val[] = $option->text;
-}
 ?>
-<input
-    type="text"
-    name="<?php echo $name; ?>"
-    id="<?php echo $id; ?>"
-    value="<?php echo htmlspecialchars($value, ENT_COMPAT, 'UTF-8'); ?>"
-    <?php echo $attr; ?>
-    data-list="<?php echo implode(', ', $val); ?>"
-    <?php echo $dataAttribute; ?>
-/>
+<div class="combobox input-append">
+	<input
+		type="text"
+		name="<?php echo $name; ?>"
+		id="<?php echo $id; ?>"
+		value="<?php echo htmlspecialchars($value, ENT_COMPAT, 'UTF-8'); ?>"
+		<?php echo $attr; ?>
+		autocomplete="off"
+	/>
+	<div class="btn-group">
+		<button type="button" class="btn dropdown-toggle">
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<?php foreach ($options as $option) : ?>
+				<li><a href="#"><?php echo $option->text; ?></a></li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+</div>

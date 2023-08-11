@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Uri Package
  *
- * @copyright  Copyright (C) 2005 - 2022 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -11,7 +11,7 @@ namespace Joomla\Uri;
 /**
  * Uri Interface
  *
- * Interface for read-only access to URIs.
+ * Interface for read-only access to Uris.
  *
  * @since  1.0
  */
@@ -23,7 +23,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const SCHEME = 1;
+	const SCHEME = 1;
 
 	/**
 	 * Include the user
@@ -31,7 +31,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const USER = 2;
+	const USER = 2;
 
 	/**
 	 * Include the password
@@ -39,7 +39,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const PASS = 4;
+	const PASS = 4;
 
 	/**
 	 * Include the host
@@ -47,7 +47,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const HOST = 8;
+	const HOST = 8;
 
 	/**
 	 * Include the port
@@ -55,7 +55,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const PORT = 16;
+	const PORT = 16;
 
 	/**
 	 * Include the path
@@ -63,7 +63,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const PATH = 32;
+	const PATH = 32;
 
 	/**
 	 * Include the query string
@@ -71,7 +71,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const QUERY = 64;
+	const QUERY = 64;
 
 	/**
 	 * Include the fragment
@@ -79,7 +79,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const FRAGMENT = 128;
+	const FRAGMENT = 128;
 
 	/**
 	 * Include all available url parts (scheme, user, pass, host, port, path, query, fragment)
@@ -87,7 +87,7 @@ interface UriInterface
 	 * @var    integer
 	 * @since  1.2.0
 	 */
-	public const ALL = 255;
+	const ALL = 255;
 
 	/**
 	 * Magic method to get the string representation of the URI object.
@@ -99,7 +99,7 @@ interface UriInterface
 	public function __toString();
 
 	/**
-	 * Returns full URI string.
+	 * Returns full uri string.
 	 *
 	 * @param   array  $parts  An array of strings specifying the parts to render.
 	 *
@@ -107,7 +107,7 @@ interface UriInterface
 	 *
 	 * @since   1.0
 	 */
-	public function toString($parts = ['scheme', 'user', 'pass', 'host', 'port', 'path', 'query', 'fragment']);
+	public function toString(array $parts = array('scheme', 'user', 'pass', 'host', 'port', 'path', 'query', 'fragment'));
 
 	/**
 	 * Checks if variable exists.
@@ -126,7 +126,7 @@ interface UriInterface
 	 * @param   string  $name     Name of the query variable to get.
 	 * @param   string  $default  Default value to return if the variable is not set.
 	 *
-	 * @return  mixed  Requested query variable if present otherwise the default value.
+	 * @return  array   Query variables.
 	 *
 	 * @since   1.0
 	 */
@@ -137,14 +137,15 @@ interface UriInterface
 	 *
 	 * @param   boolean  $toArray  True to return the query as a key => value pair array.
 	 *
-	 * @return  array|string   Query string, optionally as an array.
+	 * @return  string   Query string.
 	 *
 	 * @since   1.0
 	 */
 	public function getQuery($toArray = false);
 
 	/**
-	 * Get the URI scheme (protocol)
+	 * Get URI scheme (protocol)
+	 * ie. http, https, ftp, etc...
 	 *
 	 * @return  string  The URI scheme.
 	 *
@@ -153,43 +154,47 @@ interface UriInterface
 	public function getScheme();
 
 	/**
-	 * Get the URI username
+	 * Get URI username
+	 * Returns the username, or null if no username was specified.
 	 *
-	 * @return  string  The username, or null if no username was specified.
+	 * @return  string  The URI username.
 	 *
 	 * @since   1.0
 	 */
 	public function getUser();
 
 	/**
-	 * Get the URI password
+	 * Get URI password
+	 * Returns the password, or null if no password was specified.
 	 *
-	 * @return  string  The password, or null if no password was specified.
+	 * @return  string  The URI password.
 	 *
 	 * @since   1.0
 	 */
 	public function getPass();
 
 	/**
-	 * Get the URI host
+	 * Get URI host
+	 * Returns the hostname/ip or null if no hostname/ip was specified.
 	 *
-	 * @return  string  The hostname/IP or null if no hostname/IP was specified.
+	 * @return  string  The URI host.
 	 *
 	 * @since   1.0
 	 */
 	public function getHost();
 
 	/**
-	 * Get the URI port
+	 * Get URI port
+	 * Returns the port number, or null if no port was specified.
 	 *
-	 * @return  integer  The port number, or null if no port was specified.
+	 * @return  integer  The URI port number.
 	 *
 	 * @since   1.0
 	 */
 	public function getPort();
 
 	/**
-	 * Gets the URI path string
+	 * Gets the URI path string.
 	 *
 	 * @return  string  The URI path string.
 	 *
@@ -198,7 +203,8 @@ interface UriInterface
 	public function getPath();
 
 	/**
-	 * Get the URI archor string
+	 * Get the URI anchor string
+	 * Everything after the "#".
 	 *
 	 * @return  string  The URI anchor string.
 	 *

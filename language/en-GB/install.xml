@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<extension client="site" type="language" method="upgrade">
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.9" client="site" type="language" method="upgrade">
 	<name>English (en-GB)</name>
 	<tag>en-GB</tag>
-	<version>4.3.3</version>
-	<creationDate>2023-07</creationDate>
+	<version>3.10.12</version>
+	<creationDate>July 2023</creationDate>
 	<author>Joomla! Project</author>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>

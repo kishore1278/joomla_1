@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Administrator
  * @subpackage  mod_logged
@@ -10,20 +9,14 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Helper\ModuleHelper;
-use Joomla\Database\DatabaseInterface;
-use Joomla\Module\Logged\Administrator\Helper\LoggedHelper;
+// Include dependencies.
+JLoader::register('ModLoggedHelper', __DIR__ . '/helper.php');
 
-if ($params->get('automatic_title', 0)) {
-    $module->title = LoggedHelper::getTitle($params);
+$users = ModLoggedHelper::getList($params);
+
+if ($params->get('automatic_title', 0))
+{
+	$module->title = ModLoggedHelper::getTitle($params);
 }
 
-// Check if session metadata tracking is enabled
-if ($app->get('session_metadata', true)) {
-    $users = LoggedHelper::getList($params, $app, Factory::getContainer()->get(DatabaseInterface::class));
-
-    require ModuleHelper::getLayoutPath('mod_logged', $params->get('layout', 'default'));
-} else {
-    require ModuleHelper::getLayoutPath('mod_logged', 'disabled');
-}
+require JModuleHelper::getLayoutPath('mod_logged', $params->get('layout', 'default'));

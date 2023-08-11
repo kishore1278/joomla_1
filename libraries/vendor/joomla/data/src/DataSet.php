@@ -2,14 +2,15 @@
 /**
  * Part of the Joomla Framework Data Package
  *
- * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
 namespace Joomla\Data;
 
 /**
- * DataSet is a collection class that allows the developer to operate on a set of DataObjects as if they were in a typical PHP array.
+ * DataSet is a collection class that allows the developer to operate on a set of DataObject objects as if they were in a
+ * typical PHP array.
  *
  * @since  1.0
  */
@@ -29,7 +30,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * @var    DataObject[]
 	 * @since  1.0
 	 */
-	private $objects = [];
+	private $objects = array();
 
 	/**
 	 * The class constructor.
@@ -37,12 +38,12 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * @param   DataObject[]  $objects  An array of DataObject objects to bind to the data set.
 	 *
 	 * @since   1.0
-	 * @throws  \InvalidArgumentException if an object is not a DataObject.
+	 * @throws  \InvalidArgumentException if an object is not an instance of Data\Object.
 	 */
-	public function __construct(array $objects = [])
+	public function __construct(array $objects = array())
 	{
 		// Set the objects.
-		$this->initialise($objects);
+		$this->_initialise($objects);
 	}
 
 	/**
@@ -62,21 +63,21 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 *
 	 * @since   1.0
 	 */
-	public function __call($method, $arguments = [])
+	public function __call($method, $arguments = array())
 	{
-		$return = [];
+		$return = array();
 
 		// Iterate through the objects.
 		foreach ($this->objects as $key => $object)
 		{
 			// Create the object callback.
-			$callback = [$object, $method];
+			$callback = array($object, $method);
 
 			// Check if the callback is callable.
-			if (\is_callable($callback))
+			if (is_callable($callback))
 			{
 				// Call the method for the object.
-				$return[$key] = \call_user_func_array($callback, $arguments);
+				$return[$key] = call_user_func_array($callback, $arguments);
 			}
 		}
 
@@ -89,7 +90,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * Example: $array = $dataSet->foo;
 	 *
 	 * This will return a column of the values of the 'foo' property in all the objects
-	 * (or values determined by custom property setters in the individual DataObject's).
+	 * (or values determined by custom property setters in the individual Data\Object's).
 	 * The result array will contain an entry for each object in the list (compared to __call which may not).
 	 * The keys of the objects and the result array are maintained.
 	 *
@@ -101,7 +102,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 */
 	public function __get($property)
 	{
-		$return = [];
+		$return = array();
 
 		// Iterate through the objects.
 		foreach ($this->objects as $key => $object)
@@ -126,7 +127,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 */
 	public function __isset($property)
 	{
-		$return = [];
+		$return = array();
 
 		// Iterate through the objects.
 		foreach ($this->objects as $object)
@@ -135,7 +136,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 			$return[] = isset($object->$property);
 		}
 
-		return \in_array(true, $return, true);
+		return in_array(true, $return, true) ? true : false;
 	}
 
 	/**
@@ -144,7 +145,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * Example: $objectList->foo = 'bar';
 	 *
 	 * This will set the 'foo' property to 'bar' in all of the objects
-	 * (or a value determined by custom property setters in the DataObject).
+	 * (or a value determined by custom property setters in the Data\Object).
 	 *
 	 * @param   string  $property  The name of the property.
 	 * @param   mixed   $value     The value to give the data property.
@@ -168,7 +169,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 *
 	 * Example: unset($objectList->foo);
 	 *
-	 * This will unset all of the 'foo' properties in the list of DataObject's.
+	 * This will unset all of the 'foo' properties in the list of Data\Object's.
 	 *
 	 * @param   string  $property  The name of the property.
 	 *
@@ -214,9 +215,16 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 
 		foreach ($this->objects as $object)
 		{
-			$objectVars = json_decode(json_encode($object), true);
+			if (version_compare(PHP_VERSION, '5.4.0', '<'))
+			{
+				$object_vars = json_decode(json_encode($object->jsonSerialize()), true);
+			}
+			else
+			{
+				$object_vars = json_decode(json_encode($object), true);
+			}
 
-			$keys = ($keys === null) ? $objectVars : $function($keys, $objectVars);
+			$keys = (is_null($keys)) ? $object_vars : $function($keys, $object_vars);
 		}
 
 		return array_keys($keys);
@@ -226,26 +234,29 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * Gets all objects as an array
 	 *
 	 * @param   boolean  $associative  Option to set return mode: associative or numeric array.
-	 * @param   string   ...$keys      Unlimited optional property names to extract from objects.
+	 * @param   string   $k            Unlimited optional property names to extract from objects.
 	 *
-	 * @return  array  Returns an array according to defined options.
+	 * @return  array    Returns an array according to defined options.
 	 *
 	 * @since   1.2.0
 	 */
-	public function toArray($associative = true, ...$keys)
+	public function toArray($associative = true, $k = null)
 	{
+		$keys        = func_get_args();
+		$associative = array_shift($keys);
+
 		if (empty($keys))
 		{
 			$keys = $this->getObjectsKeys();
 		}
 
-		$return = [];
+		$return = array();
 
 		$i = 0;
 
 		foreach ($this->objects as $key => $object)
 		{
-			$arrayItem = [];
+			$array_item = array();
 
 			$key = ($associative) ? $key : $i++;
 
@@ -253,11 +264,11 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 
 			foreach ($keys as $property)
 			{
-				$propertyKey             = ($associative) ? $property : $j++;
-				$arrayItem[$propertyKey] = $object->$property ?? null;
+				$property_key              = ($associative) ? $property : $j++;
+				$array_item[$property_key] = (isset($object->$property)) ? $object->$property : null;
 			}
 
-			$return[$key] = $arrayItem;
+			$return[$key] = $array_item;
 		}
 
 		return $return;
@@ -272,7 +283,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 */
 	public function count()
 	{
-		return \count($this->objects);
+		return count($this->objects);
 	}
 
 	/**
@@ -284,7 +295,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 */
 	public function clear()
 	{
-		$this->objects = [];
+		$this->objects = array();
 		$this->rewind();
 
 		return $this;
@@ -293,7 +304,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Get the current data object in the set.
 	 *
-	 * @return  DataObject|false  The current object, or false if the array is empty or the pointer is beyond the end of the elements.
+	 * @return  DataObject  The current object, or false if the array is empty or the pointer is beyond the end of the elements.
 	 *
 	 * @since   1.0
 	 */
@@ -326,7 +337,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 		// Add this object to the dumped stack.
 		$dumped->attach($this);
 
-		$objects = [];
+		$objects = array();
 
 		// Make sure that we have not reached our maximum depth.
 		if ($depth > 0)
@@ -347,19 +358,30 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * Note that this method will not return an associative array, otherwise it would be encoded into an object.
 	 * JSON decoders do not consistently maintain the order of associative keys, whereas they do maintain the order of arrays.
 	 *
-	 * @return  array
+	 * @param   mixed  $serialized  An array of objects that have already been serialized that is used to infinite loops
+	 *                              (null on first call).
+	 *
+	 * @return  array  An array that can be serialised by json_encode().
 	 *
 	 * @since   1.0
 	 */
-	public function jsonSerialize()
+	public function jsonSerialize($serialized = null)
 	{
-		$return = [];
+		// Check if we should initialise the recursion tracker.
+		if ($serialized === null)
+		{
+			$serialized = array();
+		}
+
+		// Add this object to the serialized stack.
+		$serialized[] = spl_object_hash($this);
+		$return = array();
 
 		// Iterate through the objects.
 		foreach ($this->objects as $object)
 		{
 			// Call the method for the object.
-			$return[] = $object;
+			$return[] = $object->jsonSerialize($serialized);
 		}
 
 		return $return;
@@ -368,7 +390,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Gets the key of the current object in the iterator.
 	 *
-	 * @return  integer|false  The object key on success; false on failure.
+	 * @return  scalar  The object key on success; null on failure.
 	 *
 	 * @since   1.0
 	 */
@@ -391,16 +413,28 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 
 	/**
 	 * Applies a function to every object in the set (emulates array_walk).
-	 *
-	 * @param   callable  $funcname  Callback function.
-	 *
+	 * 
+	 * @param   callable  $funcname  Callback function.  
+	 * 
 	 * @return  boolean
-	 *
+	 * 
 	 * @since   1.2.0
 	 * @throws  \InvalidArgumentException
 	 */
-	public function walk(callable $funcname)
+	public function walk($funcname)
 	{
+		if (!is_callable($funcname))
+		{
+			$message = __METHOD__ . '() expects parameter 1 to be a valid callback';
+
+			if (is_string($funcname))
+			{
+				$message .= sprintf(', function \'%s\' not found or invalid function name', $funcname);
+			}
+
+			throw new \InvalidArgumentException($message);
+		}
+
 		foreach ($this->objects as $key => $object)
 		{
 			$funcname($object, $key);
@@ -451,7 +485,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 *
 	 * @param   mixed  $offset  The object offset.
 	 *
-	 * @return  boolean
+	 * @return  boolean  True if the object exists, false otherwise.
 	 *
 	 * @since   1.0
 	 */
@@ -465,13 +499,13 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 *
 	 * @param   mixed  $offset  The object offset.
 	 *
-	 * @return  DataObject|null
+	 * @return  DataObject  The object if it exists, null otherwise.
 	 *
 	 * @since   1.0
 	 */
 	public function offsetGet($offset)
 	{
-		return $this->objects[$offset] ?? null;
+		return isset($this->objects[$offset]) ? $this->objects[$offset] : null;
 	}
 
 	/**
@@ -483,30 +517,17 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * @return  void
 	 *
 	 * @since   1.0
-	 * @throws  \InvalidArgumentException if an object is not an instance of DataObject.
+	 * @throws  \InvalidArgumentException if an object is not an instance of Data\Object.
 	 */
 	public function offsetSet($offset, $object)
 	{
 		if (!($object instanceof DataObject))
 		{
-			throw new \InvalidArgumentException(
-				sprintf(
-					'The $object argument must be an instance of "%s", a %s was given.',
-					DataObject::class,
-					\gettype($object) === 'object' ? \get_class($object) : \gettype($object)
-				)
-			);
+			throw new \InvalidArgumentException(sprintf('%s("%s", *%s*)', __METHOD__, $offset, gettype($object)));
 		}
 
 		// Set the offset.
-		if ($offset === null)
-		{
-			$this->objects[] = $object;
-		}
-		else
-		{
-			$this->objects[$offset] = $object;
-		}
+		$this->objects[$offset] = $object;
 	}
 
 	/**
@@ -520,7 +541,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 */
 	public function offsetUnset($offset)
 	{
-		if (!isset($this[$offset]))
+		if (!$this->offsetExists($offset))
 		{
 			// Do nothing if the offset does not exist.
 			return;
@@ -530,7 +551,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 		if ($offset == $this->current)
 		{
 			// Get the current position.
-			$keys     = $this->keys();
+			$keys = $this->keys();
 			$position = array_search($this->current, $keys);
 
 			// Check if there is an object before the current object.
@@ -565,7 +586,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 		}
 		else
 		{
-			$keys          = $this->keys();
+			$keys = $this->keys();
 			$this->current = array_shift($keys);
 		}
 	}
@@ -573,7 +594,7 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Validates the iterator.
 	 *
-	 * @return  boolean
+	 * @return  boolean  True if valid, false otherwise.
 	 *
 	 * @since   1.0
 	 */
@@ -596,15 +617,15 @@ class DataSet implements DumpableInterface, \ArrayAccess, \Countable, \Iterator
 	 * @return  void
 	 *
 	 * @since   1.0
-	 * @throws  \InvalidArgumentException if an object is not a DataObject.
+	 * @throws  \InvalidArgumentException if an object is not an instance of Data\DataObject.
 	 */
-	private function initialise(array $input = [])
+	private function _initialise(array $input = array())
 	{
 		foreach ($input as $key => $object)
 		{
-			if ($object !== null)
+			if (!is_null($object))
 			{
-				$this[$key] = $object;
+				$this->offsetSet($key, $object);
 			}
 		}
 

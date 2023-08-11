@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Administrator
  * @subpackage  mod_login
@@ -10,12 +9,11 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Helper\AuthenticationHelper;
-use Joomla\CMS\Helper\ModuleHelper;
-use Joomla\Module\Login\Administrator\Helper\LoginHelper;
+// Include the login functions only once
+JLoader::register('ModLoginHelper', __DIR__ . '/helper.php');
 
-$langs            = LoginHelper::getLanguageList();
-$extraButtons     = AuthenticationHelper::getLoginButtons('form-login');
-$return           = LoginHelper::getReturnUri();
+$langs            = ModLoginHelper::getLanguageList();
+$twofactormethods = JAuthenticationHelper::getTwoFactorMethods();
+$return           = ModLoginHelper::getReturnUri();
 
-require ModuleHelper::getLayoutPath('mod_login', $params->get('layout', 'default'));
+require JModuleHelper::getLayoutPath('mod_login', $params->get('layout', 'default'));

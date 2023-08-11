@@ -1,24 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<extension type="plugin" group="fields" method="upgrade">
+<?xml version="1.0" encoding="utf-8" ?>
+<extension type="plugin" version="3.7.0" group="fields" method="upgrade">
 	<name>plg_fields_text</name>
 	<author>Joomla! Project</author>
-	<creationDate>2016-03</creationDate>
+	<creationDate>March 2016</creationDate>
 	<copyright>(C) 2016 Open Source Matters, Inc.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
 	<version>3.7.0</version>
 	<description>PLG_FIELDS_TEXT_XML_DESCRIPTION</description>
-	<namespace path="src">Joomla\Plugin\Fields\Text</namespace>
 	<files>
+		<filename plugin="text">text.php</filename>
 		<folder>params</folder>
-		<folder plugin="text">services</folder>
-		<folder>src</folder>
 		<folder>tmpl</folder>
 	</files>
 	<languages>
-		<language tag="en-GB">language/en-GB/plg_fields_text.ini</language>
-		<language tag="en-GB">language/en-GB/plg_fields_text.sys.ini</language>
+		<language tag="en-GB">en-GB.plg_fields_text.ini</language>
+		<language tag="en-GB">en-GB.plg_fields_text.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
@@ -27,7 +25,8 @@
 					name="filter"
 					type="list"
 					label="PLG_FIELDS_TEXT_PARAMS_FILTER_LABEL"
-					class="list"
+					description="PLG_FIELDS_TEXT_PARAMS_FILTER_DESC"
+					class="btn-group"
 					default="JComponentHelper::filterText"
 					validate="options"
 					>
@@ -45,6 +44,7 @@
 					name="maxlength"
 					type="number"
 					label="PLG_FIELDS_TEXT_PARAMS_MAXLENGTH_LABEL"
+					description="PLG_FIELDS_TEXT_PARAMS_MAXLENGTH_DESC"
 					filter="integer"
 				/>
 			</fieldset>

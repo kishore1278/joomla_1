@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,101 +8,104 @@
 
 namespace Joomla\CMS\Form\Field;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('list');
 
 /**
  * Content Type field.
  *
  * @since  3.1
  */
-class ContenttypeField extends ListField
+class ContenttypeField extends \JFormFieldList
 {
-    /**
-     * A flexible tag list that respects access controls
-     *
-     * @var    string
-     * @since  3.1
-     */
-    public $type = 'Contenttype';
+	/**
+	 * A flexible tag list that respects access controls
+	 *
+	 * @var    string
+	 * @since  3.1
+	 */
+	public $type = 'Contenttype';
 
-    /**
-     * Method to get the field input for a list of content types.
-     *
-     * @return  string  The field input.
-     *
-     * @since   3.1
-     */
-    protected function getInput()
-    {
-        if (!\is_array($this->value)) {
-            if (\is_object($this->value)) {
-                $this->value = $this->value->tags;
-            }
+	/**
+	 * Method to get the field input for a list of content types.
+	 *
+	 * @return  string  The field input.
+	 *
+	 * @since   3.1
+	 */
+	protected function getInput()
+	{
+		if (!is_array($this->value))
+		{
+			if (is_object($this->value))
+			{
+				$this->value = $this->value->tags;
+			}
 
-            if (\is_string($this->value)) {
-                $this->value = explode(',', $this->value);
-            }
-        }
+			if (is_string($this->value))
+			{
+				$this->value = explode(',', $this->value);
+			}
+		}
 
-        return parent::getInput();
-    }
+		return parent::getInput();
+	}
 
-    /**
-     * Method to get a list of content types
-     *
-     * @return  array  The field option objects.
-     *
-     * @since   3.1
-     */
-    protected function getOptions()
-    {
-        $lang  = Factory::getLanguage();
-        $db    = $this->getDatabase();
-        $query = $db->getQuery(true)
-            ->select(
-                [
-                    $db->quoteName('a.type_id', 'value'),
-                    $db->quoteName('a.type_title', 'text'),
-                    $db->quoteName('a.type_alias', 'alias'),
-                ]
-            )
-            ->from($db->quoteName('#__content_types', 'a'))
-            ->order($db->quoteName('a.type_title') . ' ASC');
+	/**
+	 * Method to get a list of content types
+	 *
+	 * @return  array  The field option objects.
+	 *
+	 * @since   3.1
+	 */
+	protected function getOptions()
+	{
+		$lang = Factory::getLanguage();
+		$db    = Factory::getDbo();
+		$query = $db->getQuery(true)
+			->select('a.type_id AS value, a.type_title AS text, a.type_alias AS alias')
+			->from('#__content_types AS a')
 
-        // Get the options.
-        $db->setQuery($query);
+			->order('a.type_title ASC');
 
-        try {
-            $options = $db->loadObjectList();
-        } catch (\RuntimeException $e) {
-            return [];
-        }
+		// Get the options.
+		$db->setQuery($query);
 
-        foreach ($options as $option) {
-            // Make up the string from the component sys.ini file
-            $parts = explode('.', $option->alias);
-            $comp  = array_shift($parts);
+		try
+		{
+			$options = $db->loadObjectList();
+		}
+		catch (\RuntimeException $e)
+		{
+			return array();
+		}
 
-            // Make sure the component sys.ini is loaded
-            $lang->load($comp . '.sys', JPATH_ADMINISTRATOR)
-            || $lang->load($comp . '.sys', JPATH_ADMINISTRATOR . '/components/' . $comp);
+		foreach ($options as $option)
+		{
+			// Make up the string from the component sys.ini file
+			$parts = explode('.', $option->alias);
+			$comp = array_shift($parts);
 
-            $option->string = implode('_', $parts);
-            $option->string = $comp . '_CONTENT_TYPE_' . $option->string;
+			// Make sure the component sys.ini is loaded
+			$lang->load($comp . '.sys', JPATH_ADMINISTRATOR, null, false, true)
+			|| $lang->load($comp . '.sys', JPATH_ADMINISTRATOR . '/components/' . $comp, null, false, true);
 
-            if ($lang->hasKey($option->string)) {
-                $option->text = Text::_($option->string);
-            }
-        }
+			$option->string = implode('_', $parts);
+			$option->string = $comp . '_CONTENT_TYPE_' . $option->string;
 
-        // Merge any additional options in the XML definition.
-        $options = array_merge(parent::getOptions(), $options);
+			if ($lang->hasKey($option->string))
+			{
+				$option->text = \JText::_($option->string);
+			}
+		}
 
-        return $options;
-    }
+		// Merge any additional options in the XML definition.
+		$options = array_merge(parent::getOptions(), $options);
+
+		return $options;
+	}
 }

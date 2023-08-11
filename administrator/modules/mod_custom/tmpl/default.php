@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Administrator
  * @subpackage  mod_custom
@@ -9,8 +8,5 @@
  */
 
 defined('_JEXEC') or die;
-?>
 
-<div class="mod-custom custom">
-    <?php echo $module->content; ?>
-</div>
+echo $module->content;

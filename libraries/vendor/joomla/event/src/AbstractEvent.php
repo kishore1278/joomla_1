@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Event Package
  *
- * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -23,6 +23,7 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 * The event name.
 	 *
 	 * @var    string
+	 *
 	 * @since  1.0
 	 */
 	protected $name;
@@ -31,6 +32,7 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 * The event arguments.
 	 *
 	 * @var    array
+	 *
 	 * @since  1.0
 	 */
 	protected $arguments;
@@ -39,6 +41,7 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 * A flag to see if the event propagation is stopped.
 	 *
 	 * @var    boolean
+	 *
 	 * @since  1.0
 	 */
 	protected $stopped = false;
@@ -51,7 +54,7 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($name, array $arguments = [])
+	public function __construct($name, array $arguments = array())
 	{
 		$this->name      = $name;
 		$this->arguments = $arguments;
@@ -106,7 +109,8 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	/**
 	 * Get all event arguments.
 	 *
-	 * @return  array  An associative array of argument names as keys and their values as values.
+	 * @return  array  An associative array of argument names as keys
+	 *                 and their values as values.
 	 *
 	 * @since   1.0
 	 */
@@ -128,25 +132,12 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	}
 
 	/**
-	 * Stops the propagation of the event to further event listeners.
-	 *
-	 * @return  void
-	 *
-	 * @since   2.0.0
-	 */
-	public function stopPropagation(): void
-	{
-		$this->stopped = true;
-	}
-
-	/**
 	 * Count the number of arguments.
 	 *
 	 * @return  integer  The number of arguments.
 	 *
 	 * @since   1.0
 	 */
-	#[\ReturnTypeWillChange]
 	public function count()
 	{
 		return \count($this->arguments);
@@ -161,23 +152,7 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 */
 	public function serialize()
 	{
-		return serialize($this->__serialize());
-	}
-
-	/**
-	 * Serialize the event.
-	 *
-	 * @return  array  The data to be serialized
-	 *
-	 * @since   2.0.0
-	 */
-	public function __serialize()
-	{
-		return [
-			'name'      => $this->name,
-			'arguments' => $this->arguments,
-			'stopped'   => $this->stopped,
-		];
+		return serialize(array($this->name, $this->arguments, $this->stopped));
 	}
 
 	/**
@@ -191,23 +166,7 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 */
 	public function unserialize($serialized)
 	{
-		$this->__unserialize(unserialize($serialized));
-	}
-
-	/**
-	 * Unserialize the event.
-	 *
-	 * @param   array  $data  The serialized event.
-	 *
-	 * @return  void
-	 *
-	 * @since   2.0.0
-	 */
-	public function __unserialize(array $data)
-	{
-		$this->name      = $data['name'];
-		$this->arguments = $data['arguments'];
-		$this->stopped   = $data['stopped'];
+		list($this->name, $this->arguments, $this->stopped) = unserialize($serialized);
 	}
 
 	/**
@@ -219,7 +178,6 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 *
 	 * @since   1.0
 	 */
-	#[\ReturnTypeWillChange]
 	public function offsetExists($name)
 	{
 		return $this->hasArgument($name);
@@ -234,7 +192,6 @@ abstract class AbstractEvent implements EventInterface, ArrayAccess, Serializabl
 	 *
 	 * @since   1.0
 	 */
-	#[\ReturnTypeWillChange]
 	public function offsetGet($name)
 	{
 		return $this->getArgument($name);

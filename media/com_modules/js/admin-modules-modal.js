@@ -1,45 +1,49 @@
 /**
-  * @copyright  (C) 2018 Open Source Matters, Inc. <https://www.joomla.org>
-  * @license    GNU General Public License version 2 or later; see LICENSE.txt
-  */
+ * @copyright  (C) 2017 Open Source Matters, Inc. <https://www.joomla.org>
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+	"use strict";
 
-  // Get the elements
-  const modulesLinks = [].slice.call(document.querySelectorAll('.js-module-insert'));
-  const positionsLinks = [].slice.call(document.querySelectorAll('.js-position-insert'));
+	/** Get the elements **/
+	var modulesLinks = document.querySelectorAll('.js-module-insert'), i,
+		positionsLinks = document.querySelectorAll('.js-position-insert');
 
-  // Assign listener for click event (for single module id insertion)
-  modulesLinks.forEach(element => {
-    element.addEventListener('click', event => {
-      event.preventDefault();
-      const modid = event.target.getAttribute('data-module');
-      const editor = event.target.getAttribute('data-editor');
+	/** Assign listener for click event (for single module id insertion) **/
+	for (i= 0; modulesLinks.length > i; i++) {
+		modulesLinks[i].addEventListener('click', function(event) {
+			event.preventDefault();
+			var modid = event.target.getAttribute('data-module'),
+				editor = event.target.getAttribute('data-editor');
 
-      // Use the API
-      if (window.parent.Joomla && window.parent.Joomla.editors && window.parent.Joomla.editors.instances && Object.prototype.hasOwnProperty.call(window.parent.Joomla.editors.instances, editor)) {
-        window.parent.Joomla.editors.instances[editor].replaceSelection(`{loadmoduleid ${modid}}`);
-      }
-      if (window.parent.Joomla.Modal) {
-        window.parent.Joomla.Modal.getCurrent().close();
-      }
-    });
-  });
+			/** Use the API, if editor supports it **/
+			if (window.parent.Joomla && window.parent.Joomla.editors && window.parent.Joomla.editors.instances && window.parent.Joomla.editors.instances.hasOwnProperty(editor)) {
+				window.parent.Joomla.editors.instances[editor].replaceSelection("{loadmoduleid " + modid + "}")
+			} else {
+				window.parent.jInsertEditorText("{loadmoduleid " + modid + "}", editor);
+			}
 
-  // Assign listener for click event (for position insertion)
-  positionsLinks.forEach(element => {
-    element.addEventListener('click', event => {
-      event.preventDefault();
-      const position = event.target.getAttribute('data-position');
-      const editor = event.target.getAttribute('data-editor');
+			window.parent.jModalClose();
+		});
+	}
 
-      // Use the API
-      if (window.Joomla && window.Joomla.editors && Joomla.editors.instances && Object.prototype.hasOwnProperty.call(window.parent.Joomla.editors.instances, editor)) {
-        window.parent.Joomla.editors.instances[editor].replaceSelection(`{loadposition ${position}}`);
-      }
-      if (window.parent.Joomla.Modal) {
-        window.parent.Joomla.Modal.getCurrent().close();
-      }
-    });
-  });
+	/** Assign listener for click event (for position insertion) **/
+	for (i= 0; positionsLinks.length > i; i++) {
+		positionsLinks[i].addEventListener('click', function(event) {
+			event.preventDefault();
+			var position = event.target.getAttribute('data-position'),
+				editor = event.target.getAttribute('data-editor');
+
+			/** Use the API, if editor supports it **/
+			if (window.Joomla && window.Joomla.editors && Joomla.editors.instances && Joomla.editors.instances.hasOwnProperty(editor)) {
+				Joomla.editors.instances[editor].replaceSelection("{loadposition " + position + "}")
+			} else {
+				window.parent.jInsertEditorText("{loadposition " + position + "}", editor);
+			}
+
+			window.parent.jModalClose();
+		});
+	}
+
 });

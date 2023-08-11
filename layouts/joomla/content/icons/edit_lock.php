@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Site
  * @subpackage  Layout
@@ -10,23 +9,20 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Language\Text;
-
-if (isset($displayData['ariaDescribed'])) {
-    $aria_described = $displayData['ariaDescribed'];
-} elseif (isset($displayData['article'])) {
-    $article        = $displayData['article'];
-    $aria_described = 'editarticle-' . (int) $article->id;
-} elseif (isset($displayData['contact'])) {
-    $contact        = $displayData['contact'];
-    $aria_described = 'editcontact-' . (int) $contact->id;
-}
+JHtml::_('bootstrap.tooltip');
 
 $tooltip = $displayData['tooltip'];
 
+// @deprecated  4.0  The legacy icon flag will be removed from this layout in 4.0
+$legacy  = $displayData['legacy'];
+
 ?>
-<span class="hasTooltip icon-lock" aria-hidden="true"></span>
-    <?php echo Text::_('JLIB_HTML_CHECKED_OUT'); ?>
-<div role="tooltip" id="<?php echo $aria_described; ?>">
-    <?php echo $tooltip; ?>
-</div>
+<?php if ($legacy) : ?>
+	<span class="hasTooltip" title="<?php echo JHtml::tooltipText($tooltip . '', 0); ?>">
+		<?php echo JHtml::_('image', 'system/checked_out.png', null, null, true); ?>
+	</span>
+	<?php echo JText::_('JLIB_HTML_CHECKED_OUT'); ?>
+<?php else : ?>
+	<span class="hasTooltip icon-lock" title="<?php echo JHtml::tooltipText($tooltip . '', 0); ?>"></span>
+	<?php echo JText::_('JLIB_HTML_CHECKED_OUT'); ?>
+<?php endif; ?>

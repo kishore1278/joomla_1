@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,9 +8,7 @@
 
 namespace Joomla\CMS\Menu;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Menu class.
@@ -20,15 +17,4 @@ namespace Joomla\CMS\Menu;
  */
 class AdministratorMenu extends AbstractMenu
 {
-    /**
-     * Loads the menu items
-     *
-     * @return  array
-     *
-     * @since   4.0.0
-     */
-    public function load()
-    {
-        return [];
-    }
 }

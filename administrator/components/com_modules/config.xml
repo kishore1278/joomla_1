@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <config>
-	<help key="Modules:_Options"/>
-	<inlinehelp button="show"/>
 	<fieldset
 		name="modules"
 		label="COM_MODULES_GENERAL"
@@ -14,7 +12,6 @@
 			default="site"
 			label="COM_MODULES_REDIRECT_EDIT_LABEL"
 			description="COM_MODULES_REDIRECT_EDIT_DESC"
-			validate="options"
 			>
 			<option value="admin">JADMINISTRATOR</option>
 			<option value="site">JSITE</option>
@@ -30,12 +27,12 @@
 			type="radio"
 			label="COM_MODULES_ADMIN_LANG_FILTER_LABEL"
 			description="COM_MODULES_ADMIN_LANG_FILTER_DESC"
-			layout="joomla.form.field.radio.switcher"
+			class="btn-group btn-group-yesno"
 			default="0"
 			filter="integer"
 			>
-			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 	</fieldset>
 

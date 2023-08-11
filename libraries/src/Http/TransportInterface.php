@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,20 +8,49 @@
 
 namespace Joomla\CMS\Http;
 
-use Joomla\Http\TransportInterface as FrameworkTransportInterface;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\Registry\Registry;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * HTTP transport class interface.
  *
- * @since       1.7.3
- *
- * @deprecated  4.0 will be removed in 6.0
- *              Implement Joomla\Http\TransportInterface instead
+ * @since  1.7.3
  */
-interface TransportInterface extends FrameworkTransportInterface
+interface TransportInterface
 {
+	/**
+	 * Constructor.
+	 *
+	 * @param   Registry  $options  Client options object.
+	 *
+	 * @since   1.7.3
+	 */
+	public function __construct(Registry $options);
+
+	/**
+	 * Send a request to the server and return a HttpResponse object with the response.
+	 *
+	 * @param   string   $method     The HTTP method for sending the request.
+	 * @param   Uri      $uri        The URI to the resource to request.
+	 * @param   mixed    $data       Either an associative array or a string to be sent with the request.
+	 * @param   array    $headers    An array of request headers to send with the request.
+	 * @param   integer  $timeout    Read timeout in seconds.
+	 * @param   string   $userAgent  The optional user agent string to send with the request.
+	 *
+	 * @return  Response
+	 *
+	 * @since   1.7.3
+	 */
+	public function request($method, Uri $uri, $data = null, array $headers = null, $timeout = null, $userAgent = null);
+
+	/**
+	 * Method to check if HTTP transport is available for use
+	 *
+	 * @return  boolean  True if available else false
+	 *
+	 * @since   3.0.0
+	 */
+	public static function isSupported();
 }

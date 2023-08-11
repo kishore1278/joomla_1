@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Administrator
  * @subpackage  mod_menu
@@ -10,14 +9,21 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Helper\ModuleHelper;
-use Joomla\Module\Menu\Administrator\Menu\CssMenu;
+use Joomla\Registry\Registry;
 
-$enabled = !$app->getInput()->getBool('hidemainmenu');
+// Include the module helper classes.
+JLoader::register('MenusHelper', JPATH_ADMINISTRATOR . '/components/com_menus/helpers/menus.php');
+JLoader::register('ModMenuHelper', __DIR__ . '/helper.php');
+JLoader::register('JAdminCssMenu', __DIR__ . '/menu.php');
 
-$menu        = new CssMenu($app);
-$root        = $menu->load($params, $enabled);
-$root->level = 0;
+/** @var  Registry  $params */
+$lang    = JFactory::getLanguage();
+$user    = JFactory::getUser();
+$input   = JFactory::getApplication()->input;
+$enabled = !$input->getBool('hidemainmenu');
+
+$menu = new JAdminCssMenu($user);
+$menu->load($params, $enabled);
 
 // Render the module layout
-require ModuleHelper::getLayoutPath('mod_menu', $params->get('layout', 'default'));
+require JModuleHelper::getLayoutPath('mod_menu', $params->get('layout', 'default'));

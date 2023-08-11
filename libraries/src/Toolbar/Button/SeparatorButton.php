@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,11 +8,10 @@
 
 namespace Joomla\CMS\Toolbar\Button;
 
-use Joomla\CMS\Toolbar\ToolbarButton;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\CMS\Layout\FileLayout;
+use Joomla\CMS\Toolbar\ToolbarButton;
 
 /**
  * Renders a button separator
@@ -22,26 +20,48 @@ use Joomla\CMS\Toolbar\ToolbarButton;
  */
 class SeparatorButton extends ToolbarButton
 {
-    /**
-     * Property layout.
-     *
-     * @var  string
-     *
-     * @since  4.0.0
-     */
-    protected $layout = 'joomla.toolbar.separator';
+	/**
+	 * Button type
+	 *
+	 * @var   string
+	 */
+	protected $_name = 'Separator';
 
-    /**
-     * Empty implementation (not required for separator)
-     *
-     * @return  void
-     *
-     * @since   3.0
-     *
-     * @deprecated  4.3 will be removed in 6.0
-     *              Use render() instead.
-     */
-    public function fetchButton()
-    {
-    }
+	/**
+	 * Get the HTML for a separator in the toolbar
+	 *
+	 * @param   array  &$definition  Class name and custom width
+	 *
+	 * @return  string  The HTML for the separator
+	 *
+	 * @see     ToolbarButton::render()
+	 * @since   3.0
+	 */
+	public function render(&$definition)
+	{
+		// Store all data to the options array for use with JLayout
+		$options = array();
+
+		// Separator class name
+		$options['class'] = empty($definition[1]) ? '' : $definition[1];
+
+		// Custom width
+		$options['style'] = empty($definition[2]) ? '' : ' style="width:' . (int) $definition[2] . 'px;"';
+
+		// Instantiate a new JLayoutFile instance and render the layout
+		$layout = new FileLayout('joomla.toolbar.separator');
+
+		return $layout->render($options);
+	}
+
+	/**
+	 * Empty implementation (not required for separator)
+	 *
+	 * @return  void
+	 *
+	 * @since   3.0
+	 */
+	public function fetchButton()
+	{
+	}
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,9 +8,7 @@
 
 namespace Joomla\CMS\UCM;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Interface to handle UCM

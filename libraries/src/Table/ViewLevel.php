@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,13 +8,7 @@
 
 namespace Joomla\CMS\Table;
 
-use Joomla\CMS\Language\Text;
-use Joomla\Database\DatabaseDriver;
-use Joomla\Database\ParameterType;
-
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Viewlevels table class.
@@ -24,83 +17,75 @@ use Joomla\Database\ParameterType;
  */
 class ViewLevel extends Table
 {
-    /**
-     * Constructor
-     *
-     * @param   DatabaseDriver  $db  Database driver object.
-     *
-     * @since   1.7.0
-     */
-    public function __construct(DatabaseDriver $db)
-    {
-        parent::__construct('#__viewlevels', 'id', $db);
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param   \JDatabaseDriver  $db  Database driver object.
+	 *
+	 * @since   1.7.0
+	 */
+	public function __construct($db)
+	{
+		parent::__construct('#__viewlevels', 'id', $db);
+	}
 
-    /**
-     * Method to bind the data.
-     *
-     * @param   array  $array   The data to bind.
-     * @param   mixed  $ignore  An array or space separated list of fields to ignore.
-     *
-     * @return  boolean  True on success, false on failure.
-     *
-     * @since   1.7.0
-     */
-    public function bind($array, $ignore = '')
-    {
-        // Bind the rules as appropriate.
-        if (isset($array['rules'])) {
-            if (\is_array($array['rules'])) {
-                $array['rules'] = json_encode($array['rules']);
-            }
-        }
+	/**
+	 * Method to bind the data.
+	 *
+	 * @param   array  $array   The data to bind.
+	 * @param   mixed  $ignore  An array or space separated list of fields to ignore.
+	 *
+	 * @return  boolean  True on success, false on failure.
+	 *
+	 * @since   1.7.0
+	 */
+	public function bind($array, $ignore = '')
+	{
+		// Bind the rules as appropriate.
+		if (isset($array['rules']))
+		{
+			if (is_array($array['rules']))
+			{
+				$array['rules'] = json_encode($array['rules']);
+			}
+		}
 
-        return parent::bind($array, $ignore);
-    }
+		return parent::bind($array, $ignore);
+	}
 
-    /**
-     * Method to check the current record to save
-     *
-     * @return  boolean  True on success
-     *
-     * @since   1.7.0
-     */
-    public function check()
-    {
-        try {
-            parent::check();
-        } catch (\Exception $e) {
-            $this->setError($e->getMessage());
+	/**
+	 * Method to check the current record to save
+	 *
+	 * @return  boolean  True on success
+	 *
+	 * @since   1.7.0
+	 */
+	public function check()
+	{
+		// Validate the title.
+		if ((trim($this->title)) == '')
+		{
+			$this->setError(\JText::_('JLIB_DATABASE_ERROR_VIEWLEVEL'));
 
-            return false;
-        }
+			return false;
+		}
 
-        // Validate the title.
-        if ((trim($this->title)) == '') {
-            $this->setError(Text::_('JLIB_DATABASE_ERROR_VIEWLEVEL'));
+		// Check for a duplicate title.
+		$db = $this->_db;
+		$query = $db->getQuery(true)
+			->select('COUNT(title)')
+			->from($db->quoteName('#__viewlevels'))
+			->where($db->quoteName('title') . ' = ' . $db->quote($this->title))
+			->where($db->quoteName('id') . ' != ' . (int) $this->id);
+		$db->setQuery($query);
 
-            return false;
-        }
+		if ($db->loadResult() > 0)
+		{
+			$this->setError(\JText::sprintf('JLIB_DATABASE_ERROR_USERLEVEL_NAME_EXISTS', $this->title));
 
-        $id = (int) $this->id;
+			return false;
+		}
 
-        // Check for a duplicate title.
-        $db    = $this->_db;
-        $query = $db->getQuery(true)
-            ->select('COUNT(' . $db->quoteName('title') . ')')
-            ->from($db->quoteName('#__viewlevels'))
-            ->where($db->quoteName('title') . ' = :title')
-            ->where($db->quoteName('id') . ' != :id')
-            ->bind(':title', $this->title)
-            ->bind(':id', $id, ParameterType::INTEGER);
-        $db->setQuery($query);
-
-        if ($db->loadResult() > 0) {
-            $this->setError(Text::sprintf('JLIB_DATABASE_ERROR_USERLEVEL_NAME_EXISTS', $this->title));
-
-            return false;
-        }
-
-        return true;
-    }
+		return true;
+	}
 }

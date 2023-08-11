@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Site
  * @subpackage  Layout
@@ -10,47 +9,55 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
-
-$app  = Factory::getApplication();
+$app = JFactory::getApplication();
 $form = $displayData->getForm();
 
 $name = $displayData->get('fieldset');
 $fieldSet = $form->getFieldset($name);
 
-if (empty($fieldSet)) {
-    return;
+if (empty($fieldSet))
+{
+	return;
 }
 
-$ignoreFields = $displayData->get('ignore_fields') ? : [];
-$extraFields  = $displayData->get('extra_fields') ? : [];
+$ignoreFields = $displayData->get('ignore_fields') ? : array();
+$extraFields = $displayData->get('extra_fields') ? : array();
 
-if (!empty($displayData->showOptions) || $displayData->get('show_options', 1)) {
-    if (isset($extraFields[$name])) {
-        foreach ($extraFields[$name] as $f) {
-            if (in_array($f, $ignoreFields)) {
-                continue;
-            }
-            if ($form->getField($f)) {
-                $fieldSet[] = $form->getField($f);
-            }
-        }
-    }
+if (!empty($displayData->showOptions) || $displayData->get('show_options', 1))
+{
+	if (isset($extraFields[$name]))
+	{
+		foreach ($extraFields[$name] as $f)
+		{
+			if (in_array($f, $ignoreFields))
+			{
+				continue;
+			}
+			if ($form->getField($f))
+			{
+				$fieldSet[] = $form->getField($f);
+			}
+		}
+	}
 
-    $html = [];
+	$html = array();
 
-    foreach ($fieldSet as $field) {
-        $html[] = $field->renderField();
-    }
+	foreach ($fieldSet as $field)
+	{
+		$html[] = $field->renderField();
+	}
 
-    echo implode('', $html);
-} else {
-    $html = [];
-    $html[] = '<div class="hidden">';
-    foreach ($fieldSet as $field) {
-        $html[] = $field->input;
-    }
-    $html[] = '</div>';
+	echo implode('', $html);
+}
+else
+{
+	$html = array();
+	$html[] = '<div style="display:none;">';
+	foreach ($fieldSet as $field)
+	{
+		$html[] = $field->input;
+	}
+	$html[] = '</div>';
 
-    echo implode('', $html);
+	echo implode('', $html);
 }

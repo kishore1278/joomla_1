@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,77 +8,72 @@
 
 namespace Joomla\CMS\Form\Field;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field to load a list of content authors
  *
  * @since  3.2
  */
-class AuthorField extends ListField
+class AuthorField extends \JFormFieldList
 {
-    /**
-     * The form field type.
-     *
-     * @var    string
-     * @since  3.2
-     */
-    public $type = 'Author';
+	/**
+	 * The form field type.
+	 *
+	 * @var    string
+	 * @since  3.2
+	 */
+	public $type = 'Author';
 
-    /**
-     * Cached array of the category items.
-     *
-     * @var    array
-     * @since  3.2
-     */
-    protected static $options = [];
+	/**
+	 * Cached array of the category items.
+	 *
+	 * @var    array
+	 * @since  3.2
+	 */
+	protected static $options = array();
 
-    /**
-     * Method to get the options to populate list
-     *
-     * @return  array  The field option objects.
-     *
-     * @since   3.2
-     */
-    protected function getOptions()
-    {
-        // Accepted modifiers
-        $hash = md5($this->element);
+	/**
+	 * Method to get the options to populate list
+	 *
+	 * @return  array  The field option objects.
+	 *
+	 * @since   3.2
+	 */
+	protected function getOptions()
+	{
+		// Accepted modifiers
+		$hash = md5($this->element);
 
-        if (!isset(static::$options[$hash])) {
-            static::$options[$hash] = parent::getOptions();
+		if (!isset(static::$options[$hash]))
+		{
+			static::$options[$hash] = parent::getOptions();
 
-            $db = $this->getDatabase();
+			$db = Factory::getDbo();
 
-            // Construct the query
-            $query = $db->getQuery(true)
-                ->select(
-                    [
-                        $db->quoteName('u.id', 'value'),
-                        $db->quoteName('u.name', 'text'),
-                    ]
-                )
-                ->from($db->quoteName('#__users', 'u'))
-                ->join('INNER', $db->quoteName('#__content', 'c'), $db->quoteName('c.created_by') . ' = ' . $db->quoteName('u.id'))
-                ->group(
-                    [
-                        $db->quoteName('u.id'),
-                        $db->quoteName('u.name'),
-                    ]
-                )
-                ->order($db->quoteName('u.name'));
+			// Construct the query
+			$query = $db->getQuery(true)
+				->select('u.id AS value, u.name AS text')
+				->from('#__users AS u')
+				->join('INNER', '#__content AS c ON c.created_by = u.id')
+				->group('u.id, u.name')
+				->order('u.name');
 
-            // Setup the query
-            $db->setQuery($query);
+			// Setup the query
+			$db->setQuery($query);
 
-            // Return the result
-            if ($options = $db->loadObjectList()) {
-                static::$options[$hash] = array_merge(static::$options[$hash], $options);
-            }
-        }
+			// Return the result
+			if ($options = $db->loadObjectList())
+			{
+				static::$options[$hash] = array_merge(static::$options[$hash], $options);
+			}
+		}
 
-        return static::$options[$hash];
-    }
+		return static::$options[$hash];
+	}
 }

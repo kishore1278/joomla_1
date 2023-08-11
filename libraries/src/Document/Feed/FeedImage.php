@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,9 +8,7 @@
 
 namespace Joomla\CMS\Document\Feed;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Data object representing a feed image
@@ -20,63 +17,63 @@ namespace Joomla\CMS\Document\Feed;
  */
 class FeedImage
 {
-    /**
-     * Title image attribute
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $title = '';
+	/**
+	 * Title image attribute
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $title = '';
 
-    /**
-     * URL image attribute
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $url = '';
+	/**
+	 * URL image attribute
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $url = '';
 
-    /**
-     * Link image attribute
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $link = '';
+	/**
+	 * Link image attribute
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $link = '';
 
-    /**
-     * Width image attribute
-     *
-     * optional
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $width;
+	/**
+	 * Width image attribute
+	 *
+	 * optional
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $width;
 
-    /**
-     * Title feed attribute
-     *
-     * optional
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $height;
+	/**
+	 * Title feed attribute
+	 *
+	 * optional
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $height;
 
-    /**
-     * Title feed attribute
-     *
-     * optional
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $description;
+	/**
+	 * Title feed attribute
+	 *
+	 * optional
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $description;
 }

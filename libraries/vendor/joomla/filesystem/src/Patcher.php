@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Filesystem Package
  *
- * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -54,7 +54,7 @@ class Patcher
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $sources = [];
+	protected $sources = array();
 
 	/**
 	 * Destination files
@@ -62,7 +62,7 @@ class Patcher
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $destinations = [];
+	protected $destinations = array();
 
 	/**
 	 * Removal files
@@ -70,7 +70,7 @@ class Patcher
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $removals = [];
+	protected $removals = array();
 
 	/**
 	 * Patches
@@ -78,7 +78,7 @@ class Patcher
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $patches = [];
+	protected $patches = array();
 
 	/**
 	 * Singleton instance of this class
@@ -117,7 +117,7 @@ class Patcher
 	}
 
 	/**
-	 * Reset the pacher
+	 * Reset the patcher
 	 *
 	 * @return  Patcher  This object for chaining
 	 *
@@ -125,10 +125,10 @@ class Patcher
 	 */
 	public function reset()
 	{
-		$this->sources      = [];
-		$this->destinations = [];
-		$this->removals     = [];
-		$this->patches      = [];
+		$this->sources      = array();
+		$this->destinations = array();
+		$this->removals     = array();
+		$this->patches      = array();
 
 		return $this;
 	}
@@ -215,13 +215,13 @@ class Patcher
 		}
 
 		// Clear the destinations cache
-		$this->destinations = [];
+		$this->destinations = array();
 
 		// Clear the removals
-		$this->removals = [];
+		$this->removals = array();
 
 		// Clear the patches
-		$this->patches = [];
+		$this->patches = array();
 
 		return $done;
 	}
@@ -237,7 +237,7 @@ class Patcher
 	 *
 	 * @since   1.0
 	 */
-	public function addFile($filename, $root, $strip = 0)
+	public function addFile($filename, $root = JPATH_ROOT, $strip = 0)
 	{
 		return $this->add(file_get_contents($filename), $root, $strip);
 	}
@@ -253,13 +253,13 @@ class Patcher
 	 *
 	 * @since   1.0
 	 */
-	public function add($udiff, $root, $strip = 0)
+	public function add($udiff, $root = JPATH_ROOT, $strip = 0)
 	{
-		$this->patches[] = [
+		$this->patches[] = array(
 			'udiff' => $udiff,
 			'root'  => isset($root) ? rtrim($root, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR : '',
 			'strip' => $strip,
-		];
+		);
 
 		return $this;
 	}
@@ -416,10 +416,10 @@ class Patcher
 		$line = current($lines);
 
 		// Source lines (old file)
-		$source = [];
+		$source = array();
 
 		// New lines (new file)
-		$destin  = [];
+		$destin  = array();
 		$srcLeft = $srcSize;
 		$dstLeft = $dstSize;
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Site
  * @subpackage  mod_articles_popular
@@ -9,23 +8,15 @@
  */
 
 defined('_JEXEC') or die;
-
-if (!isset($list)) {
-    if (isset($hitsDisabledMessage)) {
-        echo $hitsDisabledMessage;
-    }
-    return;
-}
-
 ?>
-<ul class="mostread mod-list">
+<ul class="mostread<?php echo $moduleclass_sfx; ?> mod-list">
 <?php foreach ($list as $item) : ?>
-    <li itemscope itemtype="https://schema.org/Article">
-        <a href="<?php echo $item->link; ?>" itemprop="url">
-            <span itemprop="name">
-                <?php echo $item->title; ?>
-            </span>
-        </a>
-    </li>
+	<li itemscope itemtype="https://schema.org/Article">
+		<a href="<?php echo $item->link; ?>" itemprop="url">
+			<span itemprop="name">
+				<?php echo $item->title; ?>
+			</span>
+		</a>
+	</li>
 <?php endforeach; ?>
 </ul>

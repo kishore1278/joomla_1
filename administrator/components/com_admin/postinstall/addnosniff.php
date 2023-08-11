@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Administrator
  * @subpackage  com_admin
@@ -11,9 +10,7 @@
  * in the default .htaccess and web.config files.
  */
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('_JEXEC') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('_JEXEC') or die;
 
 /**
  * Notifies users of the add the nosniff headers by applying the changes from the default .htaccess or web.config file
@@ -26,5 +23,5 @@
  */
 function admin_postinstall_addnosniff_condition()
 {
-    return true;
+	return true;
 }

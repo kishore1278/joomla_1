@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,11 +8,9 @@
 
 namespace Joomla\CMS\Document\Renderer\Html;
 
-use Joomla\CMS\Document\DocumentRenderer;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\CMS\Document\DocumentRenderer;
 
 /**
  * HTML document renderer for the component output
@@ -22,19 +19,19 @@ use Joomla\CMS\Document\DocumentRenderer;
  */
 class ComponentRenderer extends DocumentRenderer
 {
-    /**
-     * Renders a component script and returns the results as a string
-     *
-     * @param   string  $component  The name of the component to render
-     * @param   array   $params     Associative array of values
-     * @param   string  $content    Content script
-     *
-     * @return  string  The output of the script
-     *
-     * @since   3.5
-     */
-    public function render($component = null, $params = [], $content = null)
-    {
-        return $content;
-    }
+	/**
+	 * Renders a component script and returns the results as a string
+	 *
+	 * @param   string  $component  The name of the component to render
+	 * @param   array   $params     Associative array of values
+	 * @param   string  $content    Content script
+	 *
+	 * @return  string  The output of the script
+	 *
+	 * @since   3.5
+	 */
+	public function render($component = null, $params = array(), $content = null)
+	{
+		return $content;
+	}
 }

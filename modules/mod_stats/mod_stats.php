@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Site
  * @subpackage  mod_stats
@@ -10,11 +9,12 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Helper\ModuleHelper;
-use Joomla\Module\Stats\Site\Helper\StatsHelper;
+// Include the statistics functions only once
+JLoader::register('ModStatsHelper', __DIR__ . '/helper.php');
 
-$serverinfo = $params->get('serverinfo', 0);
-$siteinfo   = $params->get('siteinfo', 0);
-$list       = StatsHelper::getList($params);
+$serverinfo      = $params->get('serverinfo', 0);
+$siteinfo        = $params->get('siteinfo', 0);
+$list            = ModStatsHelper::getList($params);
+$moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx', ''), ENT_COMPAT, 'UTF-8');
 
-require ModuleHelper::getLayoutPath('mod_stats', $params->get('layout', 'default'));
+require JModuleHelper::getLayoutPath('mod_stats', $params->get('layout', 'default'));

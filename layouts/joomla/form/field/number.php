@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Site
  * @subpackage  Layout
@@ -34,6 +33,7 @@ extract($displayData);
  * @var   boolean  $readonly        Is this field read only?
  * @var   boolean  $repeat          Allows extensions to duplicate elements.
  * @var   boolean  $required        Is this field required?
+ * @var   integer  $size            Size attribute of the input.
  * @var   boolean  $spellcheck      Spellcheck state for the form field.
  * @var   string   $validate        Validation rules to apply.
  * @var   string   $value           Value attribute of the field.
@@ -41,38 +41,44 @@ extract($displayData);
  * @var   boolean  $hasValue        Has this field a value assigned?
  * @var   array    $options         Options available for this field.
  * @var   array    $inputType       Options available for this field.
+ * @var   array    $spellcheck      Options available for this field.
  * @var   string   $accept          File types that are accepted.
- * @var   string   $dataAttribute   Miscellaneous data attributes preprocessed for HTML output
- * @var   array    $dataAttributes  Miscellaneous data attribute for eg, data-*.
  */
 
-$attributes = [
-    !empty($class) ? 'class="form-control ' . $class . '"' : 'class="form-control"',
-    !empty($description) ? 'aria-describedby="' . ($id ?: $name) . '-desc"' : '',
-    $disabled ? 'disabled' : '',
-    $readonly ? 'readonly' : '',
-    strlen($hint) ? 'placeholder="' . htmlspecialchars($hint, ENT_COMPAT, 'UTF-8') . '"' : '',
-    !empty($onchange) ? 'onchange="' . $onchange . '"' : '',
-    isset($max) ? 'max="' . $max . '"' : '',
-    !empty($step) ? 'step="' . $step . '"' : '',
-    isset($min) ? 'min="' . $min . '"' : '',
-    $required ? 'required' : '',
-    !empty($autocomplete) ? 'autocomplete="' . $autocomplete . '"' : '',
-    $autofocus ? 'autofocus' : '',
-    $dataAttribute,
-];
+$autocomplete = !$autocomplete ? ' autocomplete="off"' : ' autocomplete="' . $autocomplete . '"';
+$autocomplete = $autocomplete == ' autocomplete="on"' ? '' : $autocomplete;
 
-if (is_numeric($value)) {
-    $value = (float) $value;
-} else {
-    $value = '';
-    $value = ($required && isset($min)) ? $min : $value;
+$attributes = array(
+	!empty($class) ? 'class="' . $class . '"' : '',
+	!empty($size) ? 'size="' . $size . '"' : '',
+	$disabled ? 'disabled' : '',
+	$readonly ? 'readonly' : '',
+	strlen($hint) ? 'placeholder="' . htmlspecialchars($hint, ENT_COMPAT, 'UTF-8') . '"' : '',
+	!empty($onchange) ? 'onchange="' . $onchange . '"' : '',
+	isset($max) ? 'max="' . $max . '"' : '',
+	!empty($step) ? 'step="' . $step . '"' : '',
+	isset($min) ? 'min="' . $min . '"' : '',
+	$required ? 'required aria-required="true"' : '',
+	$autocomplete,
+	$autofocus ? 'autofocus' : ''
+);
+
+if (is_numeric($value))
+{
+	$value = (float) $value;
 }
+else
+{
+	$value = '';
+	$value = ($required && isset($min)) ? $min : $value;
+}
+
+// Including fallback code for HTML5 non supported browsers.
+JHtml::_('jquery.framework');
+JHtml::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relative' => true, 'conditional' => 'lt IE 9'));
+
 ?>
-<input
-    type="number"
-    inputmode="numeric"
-    name="<?php echo $name; ?>"
-    id="<?php echo $id; ?>"
-    value="<?php echo htmlspecialchars($value, ENT_COMPAT, 'UTF-8'); ?>"
-    <?php echo implode(' ', $attributes); ?>>
+<input type="number" name="<?php
+echo $name; ?>" id="<?php
+echo $id; ?>" value="<?php echo
+htmlspecialchars($value, ENT_COMPAT, 'UTF-8'); ?>" <?php echo implode(' ', $attributes); ?> />

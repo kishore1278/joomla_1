@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <config>
-	<help key="Users:_Options"/>
-	<inlinehelp button="show"/>
-	<fieldset
+	<fieldset 
 		name="user_options"
 		label="COM_USERS_CONFIG_USER_OPTIONS" >
 		<field
 			name="allowUserRegistration"
 			type="radio"
 			label="COM_USERS_CONFIG_FIELD_ALLOWREGISTRATION_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="COM_USERS_CONFIG_FIELD_ALLOWREGISTRATION_DESC"
+			class="btn-group btn-group-yesno"
 			default="0"
 			>
-			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 
 		<field
 			name="new_usertype"
 			type="usergrouplist"
 			label="COM_USERS_CONFIG_FIELD_NEW_USER_TYPE_LABEL"
+			description="COM_USERS_CONFIG_FIELD_NEW_USER_TYPE_DESC"
 			default="2"
 			checksuperusergroup="1"
 		/>
@@ -28,6 +28,7 @@
 			name="guest_usergroup"
 			type="usergrouplist"
 			label="COM_USERS_CONFIG_FIELD_GUEST_USER_GROUP_LABEL"
+			description="COM_USERS_CONFIG_FIELD_GUEST_USER_GROUP_DESC"
 			default="1"
 			checksuperusergroup="1"
 		/>
@@ -36,19 +37,20 @@
 			name="sendpassword"
 			type="radio"
 			label="COM_USERS_CONFIG_FIELD_SENDPASSWORD_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="COM_USERS_CONFIG_FIELD_SENDPASSWORD_DESC"
+			class="btn-group btn-group-yesno"
 			default="1"
 			>
-			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 
 		<field
 			name="useractivation"
 			type="list"
 			label="COM_USERS_CONFIG_FIELD_USERACTIVATION_LABEL"
+			description="COM_USERS_CONFIG_FIELD_USERACTIVATION_DESC"
 			default="2"
-			validate="options"
 			>
 			<option value="0">JNONE</option>
 			<option value="1">COM_USERS_CONFIG_FIELD_USERACTIVATION_OPTION_SELFACTIVATION</option>
@@ -59,17 +61,19 @@
 			name="mail_to_admin"
 			type="radio"
 			label="COM_USERS_CONFIG_FIELD_MAILTOADMIN_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="COM_USERS_CONFIG_FIELD_MAILTOADMIN_DESC"
+			class="btn-group btn-group-yesno"
 			default="1"
 			>
-			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 
 		<field
 			name="captcha"
 			type="plugins"
 			label="COM_USERS_CONFIG_FIELD_CAPTCHA_LABEL"
+			description="COM_USERS_CONFIG_FIELD_CAPTCHA_DESC"
 			folder="captcha"
 			filter="cmd"
 			useglobal="true"
@@ -81,51 +85,54 @@
 			name="frontend_userparams"
 			type="radio"
 			label="COM_USERS_CONFIG_FIELD_FRONTEND_USERPARAMS_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="COM_USERS_CONFIG_FIELD_FRONTEND_USERPARAMS_DESC"
+			class="btn-group btn-group-yesno"
 			default="1"
 			>
-			<option value="0">JHIDE</option>
 			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
 		</field>
 
 		<field
 			name="site_language"
 			type="radio"
 			label="COM_USERS_CONFIG_FIELD_FRONTEND_LANG_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="COM_USERS_CONFIG_FIELD_FRONTEND_LANG_DESC"
+			class="btn-group btn-group-yesno"
 			default="0"
 			showon="frontend_userparams:1"
 			>
-			<option value="0">JHIDE</option>
 			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
 		</field>
 
 		<field
 			name="change_login_name"
 			type="radio"
 			label="COM_USERS_CONFIG_FIELD_CHANGEUSERNAME_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="COM_USERS_CONFIG_FIELD_CHANGEUSERNAME_DESC"
+			class="btn-group btn-group-yesno"
 			default="0"
 			>
-			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
+
 	</fieldset>
 
 	<fieldset
 		name="domain_options"
 		label="COM_USERS_CONFIG_DOMAIN_OPTIONS"
-		description="COM_USERS_CONFIG_FIELD_DOMAINS_DESC"
 		>
 
 		<field
 			name="domains"
 			type="subform"
 			label="COM_USERS_CONFIG_FIELD_DOMAINS_LABEL"
-			hiddenLabel="true"
+			description="COM_USERS_CONFIG_FIELD_DOMAINS_DESC"
 			multiple="true"
 			layout="joomla.form.field.subform.repeatable-table"
-			formsource="administrator/components/com_users/forms/config_domain.xml"
+			formsource="administrator/components/com_users/models/forms/config_domain.xml"
 		/>
 	</fieldset>
 
@@ -134,225 +141,81 @@
 		label="COM_USERS_CONFIG_PASSWORD_OPTIONS" >
 		<field
 			name="reset_count"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_FRONTEND_RESET_COUNT_LABEL"
-			filter="integer"
-			min="0"
-			max="20"
+			description="COM_USERS_CONFIG_FIELD_FRONTEND_RESET_COUNT_DESC"
+			first="0"
+			last="20"
 			step="1"
 			default="10"
-			validate="number"
 		/>
 
 		<field
 			name="reset_time"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_FRONTEND_RESET_TIME_LABEL"
-			filter="integer"
-			min="1"
-			max="24"
+			description="COM_USERS_CONFIG_FIELD_FRONTEND_RESET_TIME_DESC"
+			first="1"
+			last="24"
 			step="1"
 			default="1"
-			validate="number"
 		/>
 
 		<field
 			name="minimum_length"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_MINIMUM_PASSWORD_LENGTH"
-			filter="integer"
-			min="8"
+			description="COM_USERS_CONFIG_FIELD_MINIMUM_PASSWORD_LENGTH_DESC"
+			first="4"
+			last="99"
 			step="1"
-			default="12"
-			validate="number"
+			default="4"
 		/>
 
 		<field
 			name="minimum_integers"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_MINIMUM_INTEGERS"
-			filter="integer"
-			min="0"
+			description="COM_USERS_CONFIG_FIELD_MINIMUM_INTEGERS_DESC"
+			first="0"
+			last="98"
 			step="1"
 			default="0"
-			validate="number"
 		/>
 
 		<field
 			name="minimum_symbols"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_MINIMUM_SYMBOLS"
-			filter="integer"
-			min="0"
+			description="COM_USERS_CONFIG_FIELD_MINIMUM_SYMBOLS_DESC"
+			first="0"
+			last="98"
 			step="1"
 			default="0"
-			validate="number"
 		/>
 
 		<field
 			name="minimum_uppercase"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_MINIMUM_UPPERCASE"
-			filter="integer"
-			min="0"
+			description="COM_USERS_CONFIG_FIELD_MINIMUM_UPPERCASE_DESC"
+			first="0"
+			last="98"
 			step="1"
 			default="0"
-			validate="number"
 		/>
 
 		<field
 			name="minimum_lowercase"
-			type="number"
+			type="integer"
 			label="COM_USERS_CONFIG_FIELD_MINIMUM_LOWERCASE"
-			filter="integer"
-			min="0"
+			description="COM_USERS_CONFIG_FIELD_MINIMUM_LOWERCASE_DESC"
+			first="0"
+			last="98"
 			step="1"
 			default="0"
-			validate="number"
-		/>
-	</fieldset>
-
-	<fieldset
-		name="multifactorauth"
-		label="COM_USERS_CONFIG_MULTIFACTORAUTH_SETTINGS_LABEL"
-		description="COM_USERS_CONFIG_MULTIFACTORAUTH_SETTINGS_DESC"
-		addfieldprefix="Joomla\Component\Users\Administrator\Field"
-	>
-		<field
-			name="allowed_positions_frontend"
-			type="ModulesPosition"
-			label="COM_USERS_CONFIG_ALLOWED_POSITIONS_FRONTEND_LABEL"
-			description="COM_USERS_CONFIG_ALLOWED_POSITIONS_FRONTEND_DESC"
-			default=""
-			layout="joomla.form.field.list-fancy-select"
-			client="site"
-			multiple="1"
 		/>
 
-		<field
-			name="frontend_show_title"
-			type="radio"
-			label="COM_USERS_CONFIG_FRONTEND_SHOW_TITLE_LABEL"
-			description="COM_USERS_CONFIG_FRONTEND_SHOW_TITLE_DESC"
-			layout="joomla.form.field.radio.switcher"
-			default="1"
-			>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-
-		<field
-			name="allowed_positions_backend"
-			type="ModulesPosition"
-			label="COM_USERS_CONFIG_ALLOWED_POSITIONS_BACKEND_LABEL"
-			description="COM_USERS_CONFIG_ALLOWED_POSITIONS_BACKEND_DESC"
-			default=""
-			layout="joomla.form.field.list-fancy-select"
-			client="administrator"
-			multiple="1"
-		/>
-
-		<field
-			name="neverMFAUserGroups"
-			type="UserGroupList"
-			label="COM_USERS_CONFIG_NEVERMFAUSERGROUPS_LABEL"
-			description="COM_USERS_CONFIG_NEVERMFAUSERGROUPS_DESC"
-			layout="joomla.form.field.list-fancy-select"
-			checksuperusergroup="1"
-			default=""
-			multiple="1"
-			>
-			<option value="0">COM_USERS_CONFIG_LBL_NOGROUP</option>
-		</field>
-
-		<field
-			name="forceMFAUserGroups"
-			type="UserGroupList"
-			label="COM_USERS_CONFIG_FORCEMFAUSERGROUPS_LABEL"
-			description="COM_USERS_CONFIG_FORCEMFAUSERGROUPS_DESC"
-			layout="joomla.form.field.list-fancy-select"
-			checksuperusergroup="1"
-			default=""
-			multiple="1"
-			>
-			<option value="0">COM_USERS_CONFIG_LBL_NOGROUP</option>
-		</field>
-
-		<field
-			name="captive_template"
-			type="templatestyle"
-			label="COM_USERS_CONFIG_FRONTEND_CAPTIVE_TEMPLATE_LABEL"
-			description="COM_USERS_CONFIG_FRONTEND_CAPTIVE_TEMPLATE_DESC"
-			client="site"
-			>
-			<option value="">JOPTION_USE_DEFAULT</option>
-		</field>
-
-		<field
-			name="mfaonsilent"
-			type="radio"
-			label="COM_USERS_CONFIG_MFAONSILENT_LABEL"
-			description="COM_USERS_CONFIG_MFAONSILENT_DESC"
-			layout="joomla.form.field.radio.switcher"
-			default="0"
-			>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-
-		<field
-			name="silentresponses"
-			type="text"
-			label="COM_USERS_CONFIG_SILENTRESPONSES_LABEL"
-			description="COM_USERS_CONFIG_SILENTRESPONSES_DESC"
-			default="cookie, passwordless"
-			showon="mfaonsilent:0"
-		/>
-
-		<field
-			name="mfaredirectonlogin"
-			type="radio"
-			label="COM_USERS_CONFIG_REDIRECTONLOGIN_LABEL"
-			description="COM_USERS_CONFIG_REDIRECTONLOGIN_DESC"
-			layout="joomla.form.field.radio.switcher"
-			default="0"
-			>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-
-		<field
-			name="mfaredirecturl"
-			type="text"
-			label="COM_USERS_CONFIG_REDIRECTURL_LABEL"
-			description="COM_USERS_CONFIG_REDIRECTURL_DESC"
-			default=""
-			showon="mfaredirectonlogin:1"
-		/>
-
-		<field
-			name="mfatrycount"
-			type="number"
-			label="COM_USERS_CONFIG_MFATRYCOUNT_LABEL"
-			filter="integer"
-			min="0"
-			max="20"
-			step="1"
-			default="10"
-			validate="number"
-		/>
-
-		<field
-			name="mfatrytime"
-			type="number"
-			label="COM_USERS_CONFIG_MFATRYTIME_LABEL"
-			filter="integer"
-			min="1"
-			max="24"
-			step="1"
-			default="1"
-			validate="number"
-		/>
 	</fieldset>
 
 	<fieldset
@@ -363,17 +226,19 @@
 			name="save_history"
 			type="radio"
 			label="JGLOBAL_SAVE_HISTORY_OPTIONS_LABEL"
-			layout="joomla.form.field.radio.switcher"
+			description="JGLOBAL_SAVE_HISTORY_OPTIONS_DESC"
+			class="btn-group btn-group-yesno"
 			default="0"
 			>
-			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 
 		<field
 			name="history_limit"
 			type="number"
 			label="JGLOBAL_HISTORY_LIMIT_OPTIONS_LABEL"
+			description="JGLOBAL_HISTORY_LIMIT_OPTIONS_DESC"
 			filter="integer"
 			default="5"
 			showon="save_history:1"
@@ -381,24 +246,57 @@
 
 	</fieldset>
 
-	<fieldset
+ 	<fieldset
 		name="massmail"
 		label="COM_USERS_MASS_MAIL"
 		description="COM_USERS_MASS_MAIL_DESC">
 
 		<field
-			name="mailSubjectPrefix"
-			type="text"
+ 			name="mailSubjectPrefix"
+ 			type="text"
 			label="COM_USERS_CONFIG_FIELD_SUBJECT_PREFIX_LABEL"
+			description="COM_USERS_CONFIG_FIELD_SUBJECT_PREFIX_DESC"
 		/>
 
-		<field
-			name="mailBodySuffix"
+ 		<field
+ 			name="mailBodySuffix"
 			type="textarea"
 			label="COM_USERS_CONFIG_FIELD_MAILBODY_SUFFIX_LABEL"
-			rows="5"
-			cols="30"
+			description="COM_USERS_CONFIG_FIELD_MAILBODY_SUFFIX_DESC"
+ 			rows="5"
+ 			cols="30"
 		/>
+
+	</fieldset>
+
+	<fieldset
+		name="debug"
+		label="COM_USERS_DEBUG_LABEL"
+		description="COM_USERS_DEBUG_DESC">
+
+		<field
+			name="debugUsers"
+			type="radio"
+			label="COM_USERS_DEBUG_USERS_LABEL"
+			description="COM_USERS_DEBUG_USERS_DESC"
+			class="btn-group btn-group-yesno"
+			default="1"
+			>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+
+		<field
+			name="debugGroups"
+			type="radio"
+			label="COM_USERS_DEBUG_GROUPS_LABEL"
+			description="COM_USERS_DEBUG_GROUPS_DESC"
+			class="btn-group btn-group-yesno"
+			default="1"
+			>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
 
 	</fieldset>
 
@@ -406,25 +304,50 @@
 		label="JGLOBAL_INTEGRATION_LABEL"
 		description="COM_USERS_CONFIG_INTEGRATION_SETTINGS_DESC"
 	>
-		<fieldset name="integration_customfields"
+
+		<field
+			name="integration_sef"
+			type="note"
+			label="JGLOBAL_SEF_TITLE"
+		/>
+
+		<field
+			name="sef_advanced"
+			type="radio"
+			class="btn-group btn-group-yesno btn-group-reversed"
+			default="0"
+			label="JGLOBAL_SEF_ADVANCED_LABEL"
+			description="JGLOBAL_SEF_ADVANCED_DESC"
+			filter="integer"
+			>
+			<option value="0">JGLOBAL_SEF_ADVANCED_LEGACY</option>
+			<option value="1">JGLOBAL_SEF_ADVANCED_MODERN</option>
+		</field>
+
+		<field
+			name="integration_customfields"
+			type="note"
 			label="JGLOBAL_FIELDS_TITLE"
-		>
-			<field
-				name="custom_fields_enable"
-				type="radio"
-				label="JGLOBAL_CUSTOM_FIELDS_ENABLE_LABEL"
-				layout="joomla.form.field.radio.switcher"
-				default="1"
-				>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-		</fieldset>
+		/>
+
+		<field
+			name="custom_fields_enable"
+			type="radio"
+			label="JGLOBAL_CUSTOM_FIELDS_ENABLE_LABEL"
+			description="JGLOBAL_CUSTOM_FIELDS_ENABLE_DESC"
+			class="btn-group btn-group-yesno"
+			default="1"
+			>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+
 	</fieldset>
 
 	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"
+		description="JCONFIG_PERMISSIONS_DESC"
 		>
 
 		<field

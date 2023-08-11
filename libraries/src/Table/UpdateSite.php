@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,12 +8,7 @@
 
 namespace Joomla\CMS\Table;
 
-use Joomla\CMS\Language\Text;
-use Joomla\Database\DatabaseDriver;
-
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Update site table
@@ -24,43 +18,36 @@ use Joomla\Database\DatabaseDriver;
  */
 class UpdateSite extends Table
 {
-    /**
-     * Constructor
-     *
-     * @param   DatabaseDriver  $db  Database driver object.
-     *
-     * @since   3.4
-     */
-    public function __construct(DatabaseDriver $db)
-    {
-        parent::__construct('#__update_sites', 'update_site_id', $db);
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param   \JDatabaseDriver  $db  Database driver object.
+	 *
+	 * @since   3.4
+	 */
+	public function __construct($db)
+	{
+		parent::__construct('#__update_sites', 'update_site_id', $db);
+	}
 
-    /**
-     * Overloaded check function
-     *
-     * @return  boolean  True if the object is ok
-     *
-     * @see     Table::check()
-     * @since   3.4
-     */
-    public function check()
-    {
-        try {
-            parent::check();
-        } catch (\Exception $e) {
-            $this->setError($e->getMessage());
+	/**
+	 * Overloaded check function
+	 *
+	 * @return  boolean  True if the object is ok
+	 *
+	 * @see     Table::check()
+	 * @since   3.4
+	 */
+	public function check()
+	{
+		// Check for valid name
+		if (trim($this->name) == '' || trim($this->location) == '')
+		{
+			$this->setError(\JText::_('JLIB_DATABASE_ERROR_MUSTCONTAIN_A_TITLE_EXTENSION'));
 
-            return false;
-        }
+			return false;
+		}
 
-        // Check for valid name
-        if (trim($this->name) == '' || trim($this->location) == '') {
-            $this->setError(Text::_('JLIB_DATABASE_ERROR_MUSTCONTAIN_A_TITLE_EXTENSION'));
-
-            return false;
-        }
-
-        return true;
-    }
+		return true;
+	}
 }

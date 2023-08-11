@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Archive Package
  *
- * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -30,7 +30,7 @@ class Gzip implements ExtractableInterface
 	 * @var    array
 	 * @since  1.0
 	 */
-	private const FLAGS = ['FTEXT' => 0x01, 'FHCRC' => 0x02, 'FEXTRA' => 0x04, 'FNAME' => 0x08, 'FCOMMENT' => 0x10];
+	private $flags = array('FTEXT' => 0x01, 'FHCRC' => 0x02, 'FEXTRA' => 0x04, 'FNAME' => 0x08, 'FCOMMENT' => 0x10);
 
 	/**
 	 * Gzip file data buffer
@@ -46,7 +46,7 @@ class Gzip implements ExtractableInterface
 	 * @var    array|\ArrayAccess
 	 * @since  1.0
 	 */
-	protected $options = [];
+	protected $options = array();
 
 	/**
 	 * Create a new Archive object.
@@ -56,7 +56,7 @@ class Gzip implements ExtractableInterface
 	 * @since   1.0
 	 * @throws  \InvalidArgumentException
 	 */
-	public function __construct($options = [])
+	public function __construct($options = array())
 	{
 		if (!\is_array($options) && !($options instanceof \ArrayAccess))
 		{
@@ -183,26 +183,26 @@ class Gzip implements ExtractableInterface
 
 		$position += 10;
 
-		if ($info['FLG'] & self::FLAGS['FEXTRA'])
+		if ($info['FLG'] & $this->flags['FEXTRA'])
 		{
 			$XLEN = unpack('vLength', substr($this->data, $position + 0, 2));
 			$XLEN = $XLEN['Length'];
 			$position += $XLEN + 2;
 		}
 
-		if ($info['FLG'] & self::FLAGS['FNAME'])
+		if ($info['FLG'] & $this->flags['FNAME'])
 		{
 			$filenamePos = strpos($this->data, "\x0", $position);
 			$position    = $filenamePos + 1;
 		}
 
-		if ($info['FLG'] & self::FLAGS['FCOMMENT'])
+		if ($info['FLG'] & $this->flags['FCOMMENT'])
 		{
 			$commentPos = strpos($this->data, "\x0", $position);
 			$position   = $commentPos + 1;
 		}
 
-		if ($info['FLG'] & self::FLAGS['FHCRC'])
+		if ($info['FLG'] & $this->flags['FHCRC'])
 		{
 			$hcrc = unpack('vCRC', substr($this->data, $position + 0, 2));
 			$hcrc = $hcrc['CRC'];

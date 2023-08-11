@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,37 +8,37 @@
 
 namespace Joomla\CMS\Form\Field;
 
-use Joomla\CMS\HTML\HTMLHelper;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('list');
 
 /**
  * Provides a list of content languages
  *
- * @see    \Joomla\CMS\Form\Field\LanguageField for a select list of application languages.
+ * @see    JFormFieldLanguage for a select list of application languages.
  * @since  1.6
  */
-class ContentlanguageField extends ListField
+class ContentlanguageField extends \JFormFieldList
 {
-    /**
-     * The form field type.
-     *
-     * @var    string
-     * @since  1.6
-     */
-    public $type = 'ContentLanguage';
+	/**
+	 * The form field type.
+	 *
+	 * @var    string
+	 * @since  1.6
+	 */
+	public $type = 'ContentLanguage';
 
-    /**
-     * Method to get the field options for content languages.
-     *
-     * @return  array  The options the field is going to show.
-     *
-     * @since   1.6
-     */
-    protected function getOptions()
-    {
-        return array_merge(parent::getOptions(), HTMLHelper::_('contentlanguage.existing'));
-    }
+	/**
+	 * Method to get the field options for content languages.
+	 *
+	 * @return  array  The options the field is going to show.
+	 *
+	 * @since   1.6
+	 */
+	protected function getOptions()
+	{
+		return array_merge(parent::getOptions(), \JHtml::_('contentlanguage.existing'));
+	}
 }

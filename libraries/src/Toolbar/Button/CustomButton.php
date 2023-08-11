@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,69 +8,53 @@
 
 namespace Joomla\CMS\Toolbar\Button;
 
-use Joomla\CMS\Toolbar\ToolbarButton;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\CMS\Toolbar\ToolbarButton;
 
 /**
  * Renders a custom button
- *
- * @method self html(string $value)
- * @method string getHtml()
  *
  * @since  3.0
  */
 class CustomButton extends ToolbarButton
 {
-    /**
-     * Render button HTML.
-     *
-     * @param   array  $options  The button options.
-     *
-     * @return  string  The button HTML.
-     *
-     * @since  4.0.0
-     */
-    protected function renderButton(array &$options): string
-    {
-        return (string) ($options['html'] ?? '');
-    }
+	/**
+	 * Button type
+	 *
+	 * @var    string
+	 */
+	protected $_name = 'Custom';
 
-    /**
-     * Fetch the HTML for the button
-     *
-     * @param   string  $type  Button type, unused string.
-     * @param   string  $html  HTML string for the button
-     * @param   string  $id    CSS id for the button
-     *
-     * @return  string   HTML string for the button
-     *
-     * @since   3.0
-     *
-     * @deprecated  4.3 will be removed in 6.0
-     *              Use render() instead.
-     */
-    public function fetchButton($type = 'Custom', $html = '', $id = 'custom')
-    {
-        return $html;
-    }
+	/**
+	 * Fetch the HTML for the button
+	 *
+	 * @param   string  $type  Button type, unused string.
+	 * @param   string  $html  HTML string for the button
+	 * @param   string  $id    CSS id for the button
+	 *
+	 * @return  string   HTML string for the button
+	 *
+	 * @since   3.0
+	 */
+	public function fetchButton($type = 'Custom', $html = '', $id = 'custom')
+	{
+		return $html;
+	}
 
-    /**
-     * Method to configure available option accessors.
-     *
-     * @return  array
-     *
-     * @since  4.0.0
-     */
-    protected static function getAccessors(): array
-    {
-        return array_merge(
-            parent::getAccessors(),
-            [
-                'html',
-            ]
-        );
-    }
+	/**
+	 * Get the button CSS Id
+	 *
+	 * @param   string  $type  Not used.
+	 * @param   string  $html  Not used.
+	 * @param   string  $id    The id prefix for the button.
+	 *
+	 * @return  string  Button CSS Id
+	 *
+	 * @since   3.0
+	 */
+	public function fetchId($type = 'Custom', $html = '', $id = 'custom')
+	{
+		return $this->_parent->getName() . '-' . $id;
+	}
 }

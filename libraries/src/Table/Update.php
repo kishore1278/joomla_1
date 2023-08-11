@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,12 +8,9 @@
 
 namespace Joomla\CMS\Table;
 
-use Joomla\CMS\Language\Text;
-use Joomla\Database\DatabaseDriver;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\Registry\Registry;
 
 /**
  * Update table
@@ -24,86 +20,97 @@ use Joomla\Database\DatabaseDriver;
  */
 class Update extends Table
 {
-    /**
-     * Ensure the params in json encoded in the bind method
-     *
-     * @var    array
-     * @since  4.0.0
-     */
-    protected $_jsonEncode = ['params'];
+	/**
+	 * Constructor
+	 *
+	 * @param   \JDatabaseDriver  $db  Database driver object.
+	 *
+	 * @since   1.7.0
+	 */
+	public function __construct($db)
+	{
+		parent::__construct('#__updates', 'update_id', $db);
+	}
 
-    /**
-     * Constructor
-     *
-     * @param   DatabaseDriver  $db  Database driver object.
-     *
-     * @since   1.7.0
-     */
-    public function __construct(DatabaseDriver $db)
-    {
-        parent::__construct('#__updates', 'update_id', $db);
-    }
+	/**
+	 * Overloaded check function
+	 *
+	 * @return  boolean  True if the object is ok
+	 *
+	 * @see     Table::check()
+	 * @since   1.7.0
+	 */
+	public function check()
+	{
+		// Check for valid name
+		if (trim($this->name) == '' || trim($this->element) == '')
+		{
+			$this->setError(\JText::_('JLIB_DATABASE_ERROR_MUSTCONTAIN_A_TITLE_EXTENSION'));
 
-    /**
-     * Overloaded check function
-     *
-     * @return  boolean  True if the object is ok
-     *
-     * @see     Table::check()
-     * @since   1.7.0
-     */
-    public function check()
-    {
-        try {
-            parent::check();
-        } catch (\Exception $e) {
-            $this->setError($e->getMessage());
+			return false;
+		}
 
-            return false;
-        }
+		if (!$this->update_id && !$this->data)
+		{
+			$this->data = '';
+		}
 
-        // Check for valid name
-        if (trim($this->name) == '' || trim($this->element) == '') {
-            $this->setError(Text::_('JLIB_DATABASE_ERROR_MUSTCONTAIN_A_TITLE_EXTENSION'));
+		return true;
+	}
 
-            return false;
-        }
+	/**
+	 * Overloaded bind function
+	 *
+	 * @param   array  $array   Named array
+	 * @param   mixed  $ignore  An optional array or space separated list of properties
+	 *                          to ignore while binding.
+	 *
+	 * @return  mixed  Null if operation was satisfactory, otherwise returns an error
+	 *
+	 * @see     Table::bind()
+	 * @since   1.7.0
+	 */
+	public function bind($array, $ignore = '')
+	{
+		if (isset($array['params']) && is_array($array['params']))
+		{
+			$registry = new Registry($array['params']);
+			$array['params'] = (string) $registry;
+		}
 
-        if (!$this->update_id && !$this->data) {
-            $this->data = '';
-        }
+		if (isset($array['control']) && is_array($array['control']))
+		{
+			$registry = new Registry($array['control']);
+			$array['control'] = (string) $registry;
+		}
 
-        // While column is not nullable, make sure we have a value.
-        if ($this->description === null) {
-            $this->description = '';
-        }
+		return parent::bind($array, $ignore);
+	}
 
-        return true;
-    }
+	/**
+	 * Method to create and execute a SELECT WHERE query.
+	 *
+	 * @param   array  $options  Array of options
+	 *
+	 * @return  string  Results of query
+	 *
+	 * @since   1.7.0
+	 */
+	public function find($options = array())
+	{
+		$where = array();
 
-    /**
-     * Method to create and execute a SELECT WHERE query.
-     *
-     * @param   array  $options  Array of options
-     *
-     * @return  string  Results of query
-     *
-     * @since   1.7.0
-     */
-    public function find($options = [])
-    {
-        $where = [];
+		foreach ($options as $col => $val)
+		{
+			$where[] = $col . ' = ' . $this->_db->quote($val);
+		}
 
-        foreach ($options as $col => $val) {
-            $where[] = $col . ' = ' . $this->_db->quote($val);
-        }
+		$query = $this->_db->getQuery(true)
+			->select($this->_db->quoteName($this->_tbl_key))
+			->from($this->_db->quoteName($this->_tbl))
+			->where(implode(' AND ', $where));
+		$this->_db->setQuery($query);
 
-        $query = $this->_db->getQuery(true)
-            ->select($this->_db->quoteName($this->_tbl_key))
-            ->from($this->_db->quoteName($this->_tbl))
-            ->where(implode(' AND ', $where));
-        $this->_db->setQuery($query);
-
-        return $this->_db->loadResult();
-    }
+		return $this->_db->loadResult();
+	}
 }

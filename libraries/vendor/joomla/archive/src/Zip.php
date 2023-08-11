@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Archive Package
  *
- * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -42,7 +42,7 @@ class Zip implements ExtractableInterface
 	 * @var    array
 	 * @since  1.0
 	 */
-	private const METHODS = [
+	private $methods = array(
 		0x0 => 'None',
 		0x1 => 'Shrunk',
 		0x2 => 'Super Fast',
@@ -51,7 +51,7 @@ class Zip implements ExtractableInterface
 		0x5 => 'Maximum',
 		0x6 => 'Imploded',
 		0x8 => 'Deflated',
-	];
+	);
 
 	/**
 	 * Beginning of central directory record.
@@ -59,7 +59,7 @@ class Zip implements ExtractableInterface
 	 * @var    string
 	 * @since  1.0
 	 */
-	private const CTRL_DIR_HEADER = "\x50\x4b\x01\x02";
+	private $ctrlDirHeader = "\x50\x4b\x01\x02";
 
 	/**
 	 * End of central directory record.
@@ -67,7 +67,7 @@ class Zip implements ExtractableInterface
 	 * @var    string
 	 * @since  1.0
 	 */
-	private const CTRL_DIR_END = "\x50\x4b\x05\x06\x00\x00\x00\x00";
+	private $ctrlDirEnd = "\x50\x4b\x05\x06\x00\x00\x00\x00";
 
 	/**
 	 * Beginning of file contents.
@@ -75,7 +75,7 @@ class Zip implements ExtractableInterface
 	 * @var    string
 	 * @since  1.0
 	 */
-	private const FILE_HEADER = "\x50\x4b\x03\x04";
+	private $fileHeader = "\x50\x4b\x03\x04";
 
 	/**
 	 * ZIP file data buffer
@@ -99,7 +99,7 @@ class Zip implements ExtractableInterface
 	 * @var    array|\ArrayAccess
 	 * @since  1.0
 	 */
-	protected $options = [];
+	protected $options = array();
 
 	/**
 	 * Create a new Archive object.
@@ -109,7 +109,7 @@ class Zip implements ExtractableInterface
 	 * @since   1.0
 	 * @throws  \InvalidArgumentException
 	 */
-	public function __construct($options = [])
+	public function __construct($options = array())
 	{
 		if (!\is_array($options) && !($options instanceof \ArrayAccess))
 		{
@@ -134,8 +134,8 @@ class Zip implements ExtractableInterface
 	 */
 	public function create($archive, $files)
 	{
-		$contents = [];
-		$ctrldir  = [];
+		$contents = array();
+		$ctrldir  = array();
 
 		foreach ($files as $file)
 		{
@@ -206,7 +206,7 @@ class Zip implements ExtractableInterface
 	 */
 	public function checkZipData($data)
 	{
-		return strpos($data, self::FILE_HEADER) !== false;
+		return strpos($data, $this->fileHeader) !== false;
 	}
 
 	/**
@@ -244,7 +244,7 @@ class Zip implements ExtractableInterface
 				$buffer = $this->getFileData($i);
 				$path   = Path::clean($destination . '/' . $metadata['name']);
 
-				if (!$this->isBelow($destination, $destination . '/' . $metadata['name']))
+				if (!$this->isBelow($destination, $path))
 				{
 					throw new \OutOfBoundsException('Unable to write outside of destination path', 100);
 				}
@@ -348,16 +348,16 @@ class Zip implements ExtractableInterface
 	 */
 	private function readZipInfo($data)
 	{
-		$entries = [];
+		$entries = array();
 
 		// Find the last central directory header entry
-		$fhLast = strpos($data, self::CTRL_DIR_END);
+		$fhLast = strpos($data, $this->ctrlDirEnd);
 
 		do
 		{
 			$last = $fhLast;
 		}
-		while (($fhLast = strpos($data, self::CTRL_DIR_END, $fhLast + 1)) !== false);
+		while (($fhLast = strpos($data, $this->ctrlDirEnd, $fhLast + 1)) !== false);
 
 		// Find the central directory offset
 		$offset = 0;
@@ -373,7 +373,7 @@ class Zip implements ExtractableInterface
 		}
 
 		// Get details from central directory structure.
-		$fhStart    = strpos($data, self::CTRL_DIR_HEADER, $offset);
+		$fhStart    = strpos($data, $this->ctrlDirHeader, $offset);
 		$dataLength = \strlen($data);
 
 		do
@@ -386,18 +386,18 @@ class Zip implements ExtractableInterface
 			$info = unpack('vMethod/VTime/VCRC32/VCompressed/VUncompressed/vLength', substr($data, $fhStart + 10, 20));
 			$name = substr($data, $fhStart + 46, $info['Length']);
 
-			$entries[$name] = [
+			$entries[$name] = array(
 				'attr'       => null,
 				'crc'        => sprintf('%08s', dechex($info['CRC32'])),
 				'csize'      => $info['Compressed'],
 				'date'       => null,
 				'_dataStart' => null,
 				'name'       => $name,
-				'method'     => self::METHODS[$info['Method']],
+				'method'     => $this->methods[$info['Method']],
 				'_method'    => $info['Method'],
 				'size'       => $info['Uncompressed'],
 				'type'       => null,
-			];
+			);
 
 			$entries[$name]['date'] = mktime(
 				($info['Time'] >> 11) & 0x1f,
@@ -421,21 +421,24 @@ class Zip implements ExtractableInterface
 			$entries[$name]['offset'] = $info['Offset'];
 
 			// Get details from local file header since we have the offset
-			$lfhStart = strpos($data, self::FILE_HEADER, $entries[$name]['offset']);
+			$lfhStart = strpos($data, $this->fileHeader, $entries[$name]['offset']);
 
 			if ($dataLength < $lfhStart + 34)
 			{
 				throw new \RuntimeException('Invalid ZIP Data');
 			}
 
-			$info                         = unpack('vMethod/VTime/VCRC32/VCompressed/VUncompressed/vLength/vExtraLength', substr($data, $lfhStart + 8, 25));
+			$info                         = unpack(
+				'vMethod/VTime/VCRC32/VCompressed/VUncompressed/vLength/vExtraLength',
+				substr($data, $lfhStart + 8, 25)
+			);
 			$name                         = substr($data, $lfhStart + 30, $info['Length']);
 			$entries[$name]['_dataStart'] = $lfhStart + 30 + $info['Length'] + $info['ExtraLength'];
 
 			// Bump the max execution time because not using the built in php zip libs makes this process slow.
 			@set_time_limit(ini_get('max_execution_time'));
 		}
-		while (($fhStart = strpos($data, self::CTRL_DIR_HEADER, $fhStart + 46)) !== false);
+		while (($fhStart = strpos($data, $this->ctrlDirHeader, $fhStart + 46)) !== false);
 
 		$this->metadata = array_values($entries);
 
@@ -451,7 +454,7 @@ class Zip implements ExtractableInterface
 	 *
 	 * @since   1.0
 	 */
-	private function getFileData(int $key): string
+	private function getFileData($key)
 	{
 		if ($this->metadata[$key]['_method'] == 0x8)
 		{
@@ -477,7 +480,9 @@ class Zip implements ExtractableInterface
 	}
 
 	/**
-	 * Converts a UNIX timestamp to a 4-byte DOS date and time format (date in high 2-bytes, time in low 2-bytes allowing magnitude comparison).
+	 * Converts a UNIX timestamp to a 4-byte DOS date and time format
+	 * (date in high 2-bytes, time in low 2-bytes allowing magnitude
+	 * comparison).
 	 *
 	 * @param   integer  $unixtime  The current UNIX timestamp.
 	 *
@@ -515,7 +520,7 @@ class Zip implements ExtractableInterface
 	 * @since   1.0
 	 * @todo    Review and finish implementation
 	 */
-	private function addToZipFile(array &$file, array &$contents, array &$ctrldir): void
+	private function addToZipFile(array &$file, array &$contents, array &$ctrldir)
 	{
 		$data = &$file['data'];
 		$name = str_replace('\\', '/', $file['name']);
@@ -534,7 +539,7 @@ class Zip implements ExtractableInterface
 			. \chr(hexdec($dtime[0] . $dtime[1]));
 
 		// Begin creating the ZIP data.
-		$fr = self::FILE_HEADER;
+		$fr = $this->fileHeader;
 
 		// Version needed to extract.
 		$fr .= "\x14\x00";
@@ -581,7 +586,7 @@ class Zip implements ExtractableInterface
 		$contents[] = &$fr;
 
 		// Add to central directory record.
-		$cdrec = self::CTRL_DIR_HEADER;
+		$cdrec = $this->ctrlDirHeader;
 
 		// Version made by.
 		$cdrec .= "\x00\x00";
@@ -649,7 +654,7 @@ class Zip implements ExtractableInterface
 	 * @since   1.0
 	 * @todo	Review and finish implementation
 	 */
-	private function createZipFile(array $contents, array $ctrlDir, string $path): bool
+	private function createZipFile(array $contents, array $ctrlDir, $path)
 	{
 		$data = implode('', $contents);
 		$dir  = implode('', $ctrlDir);
@@ -662,7 +667,7 @@ class Zip implements ExtractableInterface
 		 * Offset to start of central dir.
 		 * ZIP file comment length.
 		 */
-		$buffer = $data . $dir . self::CTRL_DIR_END .
+		$buffer = $data . $dir . $this->ctrlDirEnd .
 		pack('v', \count($ctrlDir)) .
 		pack('v', \count($ctrlDir)) .
 		pack('V', \strlen($dir)) .
@@ -675,14 +680,14 @@ class Zip implements ExtractableInterface
 	/**
 	 * Check if a path is below a given destination path
 	 *
-	 * @param   string  $destination  The destination path
-	 * @param   string  $path         The path to be checked
+	 * @param   string  $destination  Root path
+	 * @param   string  $path         Path to check
 	 *
 	 * @return  boolean
 	 *
 	 * @since   1.1.10
 	 */
-	private function isBelow($destination, $path): bool
+	private function isBelow($destination, $path)
 	{
 		$absoluteRoot = Path::clean(Path::resolve($destination));
 		$absolutePath = Path::clean(Path::resolve($path));

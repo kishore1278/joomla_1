@@ -2,11 +2,13 @@
 /**
  * Part of the Joomla Framework Input Package
  *
- * @copyright  Copyright (C) 2005 - 2022 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
 namespace Joomla\Input;
+
+use Joomla\Filter;
 
 /**
  * Joomla! Input Files Class
@@ -21,20 +23,33 @@ class Files extends Input
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $decodedData = [];
+	protected $decodedData = array();
 
 	/**
 	 * The class constructor.
 	 *
-	 * @param   array|null  $source   Source data (Optional, default is $_FILES)
-	 * @param   array       $options  Array of configuration parameters (Optional)
+	 * @param   array  $source   The source argument is ignored. $_FILES is always used.
+	 * @param   array  $options  An optional array of configuration options:
+	 *                           filter : a custom JFilterInput object.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($source = null, array $options = [])
+	public function __construct($source = null, array $options = array())
 	{
-		$source = $source ?? $_FILES;
-		parent::__construct($source, $options);
+		if (isset($options['filter']))
+		{
+			$this->filter = $options['filter'];
+		}
+		else
+		{
+			$this->filter = new Filter\InputFilter;
+		}
+
+		// Set the data source.
+		$this->data = & $_FILES;
+
+		// Set the options for the class.
+		$this->options = $options;
 	}
 
 	/**
@@ -54,13 +69,13 @@ class Files extends Input
 		if (isset($this->data[$name]))
 		{
 			$results = $this->decodeData(
-				[
+				array(
 					$this->data[$name]['name'],
 					$this->data[$name]['type'],
 					$this->data[$name]['tmp_name'],
 					$this->data[$name]['error'],
 					$this->data[$name]['size'],
-				]
+				)
 			);
 
 			return $results;
@@ -80,19 +95,19 @@ class Files extends Input
 	 */
 	protected function decodeData(array $data)
 	{
-		$result = [];
+		$result = array();
 
 		if (\is_array($data[0]))
 		{
 			foreach ($data[0] as $k => $v)
 			{
-				$result[$k] = $this->decodeData([$data[0][$k], $data[1][$k], $data[2][$k], $data[3][$k], $data[4][$k]]);
+				$result[$k] = $this->decodeData(array($data[0][$k], $data[1][$k], $data[2][$k], $data[3][$k], $data[4][$k]));
 			}
 
 			return $result;
 		}
 
-		return ['name' => $data[0], 'type' => $data[1], 'tmp_name' => $data[2], 'error' => $data[3], 'size' => $data[4]];
+		return array('name' => $data[0], 'type' => $data[1], 'tmp_name' => $data[2], 'error' => $data[3], 'size' => $data[4]);
 	}
 
 	/**

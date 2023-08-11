@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,11 +8,9 @@
 
 namespace Joomla\CMS\Versioning;
 
-use Joomla\CMS\Table\TableInterface;
+defined('JPATH_PLATFORM') or die;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+use Joomla\CMS\Table\TableInterface;
 
 /**
  * Interface for a versionable Table class
@@ -22,15 +19,15 @@ use Joomla\CMS\Table\TableInterface;
  */
 interface VersionableTableInterface extends TableInterface
 {
-    /**
-     * Get the type alias for the history table
-     *
-     * The type alias generally is the internal component name with the
-     * content type. Ex.: com_content.article
-     *
-     * @return  string  The alias as described above
-     *
-     * @since   3.10.0
-     */
-    public function getTypeAlias();
+	/**
+	 * Get the type alias for the history table
+	 *
+	 * The type alias generally is the internal component name with the
+	 * content type. Ex.: com_content.article
+	 *
+	 * @return  string  The alias as described above
+	 *
+	 * @since   3.10.0
+	 */
+	public function getTypeAlias();
 }

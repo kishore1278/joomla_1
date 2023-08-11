@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Joomla! Content Management System
  *
@@ -9,9 +8,7 @@
 
 namespace Joomla\CMS\Document\Opensearch;
 
-// phpcs:disable PSR1.Files.SideEffects
-\defined('JPATH_PLATFORM') or die;
-// phpcs:enable PSR1.Files.SideEffects
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Data object representing an OpenSearch image
@@ -20,43 +17,43 @@ namespace Joomla\CMS\Document\Opensearch;
  */
 class OpensearchImage
 {
-    /**
-     * The images MIME type
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $type = '';
+	/**
+	 * The images MIME type
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $type = '';
 
-    /**
-     * URL of the image or the image as base64 encoded value
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $data = '';
+	/**
+	 * URL of the image or the image as base64 encoded value
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $data = '';
 
-    /**
-     * The image's width
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $width;
+	/**
+	 * The image's width
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $width;
 
-    /**
-     * The image's height
-     *
-     * required
-     *
-     * @var    string
-     * @since  1.7.0
-     */
-    public $height;
+	/**
+	 * The image's height
+	 *
+	 * required
+	 *
+	 * @var    string
+	 * @since  1.7.0
+	 */
+	public $height;
 }

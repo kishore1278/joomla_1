@@ -2,7 +2,7 @@
 /**
  * Part of the Joomla Framework Filesystem Package
  *
- * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -41,9 +41,9 @@ class File
 	 *
 	 * @since   1.0
 	 */
-	public static function makeSafe($file, array $stripChars = ['#^\.#'])
+	public static function makeSafe($file, array $stripChars = array('#^\.#'))
 	{
-		$regex = array_merge(['#(\.){2,}#', '#[^A-Za-z0-9\.\_\- ]#'], $stripChars);
+		$regex = array_merge(array('#(\.){2,}#', '#[^A-Za-z0-9\.\_\- ]#'), $stripChars);
 
 		$file = preg_replace($regex, '', $file);
 
@@ -97,8 +97,6 @@ class File
 				throw new FilesystemException(sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()));
 			}
 
-			self::invalidateFileCache($dest);
-
 			return true;
 		}
 
@@ -106,8 +104,6 @@ class File
 		{
 			throw new FilesystemException(__METHOD__ . ': Copy failed.');
 		}
-
-		self::invalidateFileCache($dest);
 
 		return true;
 	}
@@ -146,8 +142,6 @@ class File
 			{
 				throw new FilesystemException(__METHOD__ . ': Failed deleting ' . $filename);
 			}
-
-			self::invalidateFileCache($file);
 		}
 
 		return true;
@@ -189,8 +183,6 @@ class File
 				throw new FilesystemException(__METHOD__ . ': ' . $stream->getError());
 			}
 
-			self::invalidateFileCache($dest);
-
 			return true;
 		}
 
@@ -198,8 +190,6 @@ class File
 		{
 			throw new FilesystemException(__METHOD__ . ': Rename failed.');
 		}
-
-		self::invalidateFileCache($dest);
 
 		return true;
 	}
@@ -234,8 +224,6 @@ class File
 			$stream->set('chunksize', (1024 * 1024));
 			$stream->writeFile($file, $buffer, $appendToFile);
 
-			self::invalidateFileCache($file);
-
 			return true;
 		}
 
@@ -244,16 +232,10 @@ class File
 		// Set the required flag to only append to the file and not overwrite it
 		if ($appendToFile === true)
 		{
-			$res = \is_int(file_put_contents($file, $buffer, \FILE_APPEND));
-		}
-		else
-		{
-			$res = \is_int(file_put_contents($file, $buffer));
+			return \is_int(file_put_contents($file, $buffer, \FILE_APPEND));
 		}
 
-		self::invalidateFileCache($file);
-
-		return $res;
+		return \is_int(file_put_contents($file, $buffer));
 	}
 
 	/**
@@ -290,8 +272,6 @@ class File
 				throw new FilesystemException(sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()));
 			}
 
-			self::invalidateFileCache($dest);
-
 			return true;
 		}
 
@@ -300,8 +280,6 @@ class File
 			// Short circuit to prevent file permission errors
 			if (Path::setPermissions($dest))
 			{
-				self::invalidateFileCache($dest);
-
 				return true;
 			}
 
@@ -309,26 +287,5 @@ class File
 		}
 
 		throw new FilesystemException(__METHOD__ . ': Failed to move file.');
-	}
-
-	/**
-	 * Invalidate any opcache for a newly written file immediately, if opcache* functions exist and if this was a PHP file.
-	 *
-	 * @param   string  $file  The path to the file just written to, to flush from opcache
-	 *
-	 * @return void
-	 */
-	public static function invalidateFileCache($file)
-	{
-		if (function_exists('opcache_invalidate'))
-		{
-			$info = pathinfo($file);
-
-			if (isset($info['extension']) && $info['extension'] === 'php')
-			{
-				// Force invalidation to be absolutely sure the opcache is cleared for this file.
-				opcache_invalidate($file, true);
-			}
-		}
 	}
 }

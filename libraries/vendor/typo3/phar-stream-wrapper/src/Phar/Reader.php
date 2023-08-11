@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace TYPO3\PharStreamWrapper\Phar;
 
 /*
@@ -32,7 +31,7 @@ class Reader
     /**
      * @param string $fileName
      */
-    public function __construct(string $fileName)
+    public function __construct($fileName)
     {
         if (strpos($fileName, '://') !== false) {
             throw new ReaderException(
@@ -48,7 +47,7 @@ class Reader
     /**
      * @return Container
      */
-    public function resolveContainer(): Container
+    public function resolveContainer()
     {
         $data = $this->extractData($this->resolveStream() . $this->fileName);
 
@@ -85,7 +84,7 @@ class Reader
      * @param string $fileName e.g. '/path/file.phar' or 'compress.zlib:///path/file.phar'
      * @return array
      */
-    private function extractData(string $fileName): array
+    private function extractData($fileName)
     {
         $stubContent = null;
         $manifestContent = null;
@@ -135,11 +134,11 @@ class Reader
         }
         fclose($resource);
 
-        return [
+        return array(
             'stubContent' => $stubContent,
             'manifestContent' => $manifestContent,
             'manifestLength' => $manifestLength,
-        ];
+        );
     }
 
     /**
@@ -147,7 +146,7 @@ class Reader
      *
      * @return string
      */
-    private function resolveStream(): string
+    private function resolveStream()
     {
         if ($this->fileType === 'application/x-gzip' || $this->fileType === 'application/gzip') {
             return 'compress.zlib://';
@@ -175,7 +174,7 @@ class Reader
      *
      * @return string
      */
-    private function determineFileTypeByHeader(): string
+    private function determineFileTypeByHeader()
     {
         $resource = fopen($this->fileName, 'r');
         if (!is_resource($resource)) {
@@ -199,7 +198,7 @@ class Reader
      * @param string $content
      * @return int|null
      */
-    private function resolveManifestLength(string $content)
+    private function resolveManifestLength($content)
     {
         if (strlen($content) < 4) {
             return null;
@@ -212,7 +211,7 @@ class Reader
      * @param int $start
      * @return int
      */
-    public static function resolveFourByteLittleEndian(string $content, int $start): int
+    public static function resolveFourByteLittleEndian($content, $start)
     {
         $payload = substr($content, $start, 4);
         if (!is_string($payload)) {
@@ -237,7 +236,7 @@ class Reader
      * @param int $start
      * @return int
      */
-    public static function resolveTwoByteBigEndian(string $content, int $start): int
+    public static function resolveTwoByteBigEndian($content, $start)
     {
         $payload = substr($content, $start, 2);
         if (!is_string($payload)) {
