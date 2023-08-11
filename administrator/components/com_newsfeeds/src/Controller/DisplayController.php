@@ -19,7 +19,7 @@ use Joomla\CMS\Router\Route;
 // phpcs:enable PSR1.Files.SideEffects
 
 /**
- * Newsfeeds display controller.
+ * Newsfeeds master display controller.
  *
  * @since  1.6
  */

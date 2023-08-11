@@ -60,8 +60,8 @@ a {
     text-decoration: underline;
   }
 
-  &:not(.btn):hover,
-  &:not(.btn):focus {
+  &:hover,
+  &:focus {
     color: var(--cassiopeia-color-hover);
   }
 

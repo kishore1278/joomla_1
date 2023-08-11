@@ -269,7 +269,7 @@ class PlgSystemActionLogs extends CMSPlugin
             $result = false;
         }
 
-        // Stop on failure
+        // Abort on failure
         if (!$result) {
             return;
         }

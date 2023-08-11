@@ -8322,7 +8322,7 @@ var script$j = {
       }
 
       return this.item.thumb_path.split(Joomla.getOptions('system.paths').rootFull).length > 1
-        ? `${this.item.thumb_path}?${this.item.modified_date ? new Date(this.item.modified_date).valueOf() : api.mediaVersion}`
+        ? `${this.item.thumb_path}?${api.mediaVersion}`
         : `${this.item.thumb_path}`;
     },
     width() {
@@ -13240,38 +13240,47 @@ function setSession(path) {
 
 // Gracefully use the given path, the session storage state or fall back to sensible default
 function getCurrentPath() {
-  let path = options.currentPath;
-
-  // Set the path from the session when available
-  if (!path && storedState && storedState.selectedDirectory) {
-    path = storedState.selectedDirectory;
-  }
-
-  // No path available, use the root of the first drive
-  if (!path) {
+  // Nothing stored in the session, use the root of the first drive
+  if (!storedState || !storedState.selectedDirectory) {
     setSession(defaultDisk.drives[0].root);
     return defaultDisk.drives[0].root;
   }
 
-  // Get the fragments
-  const fragment = path.split(':/');
+  // Check that we have a fragment
+  if (!options.currentPath) {
+    if (!(storedState || storedState.selectedDirectory)) {
+      setSession(defaultDisk.drives[0].root);
+      return defaultDisk.drives[0].root;
+    }
+    options.currentPath = '';
+  }
 
-  // Check that we have a drive
+  // Get the fragments
+  const fragment = options.currentPath.split(':/');
+
+  // Check that we have a fragment
   if (!fragment.length) {
     setSession(defaultDisk.drives[0].root);
     return defaultDisk.drives[0].root;
   }
   const drivesTmp = Object.values(loadedDisks).map(drive => drive.drives);
+  const useDrive = drivesTmp.flat().find(drive => drive.root.startsWith(fragment[0]));
 
   // Drive doesn't exist
-  if (!drivesTmp.flat().find(drive => drive.root.startsWith(fragment[0]))) {
+  if (!useDrive) {
     setSession(defaultDisk.drives[0].root);
     return defaultDisk.drives[0].root;
   }
 
+  // Session match
+  if (storedState && storedState.selectedDirectory && storedState.selectedDirectory.startsWith(useDrive.root)) {
+    setSession(storedState.selectedDirectory);
+    return storedState.selectedDirectory;
+  }
+
   // Session missmatch
-  setSession(path);
-  return path;
+  setSession(options.currentPath);
+  return options.currentPath;
 }
 
 // The initial state

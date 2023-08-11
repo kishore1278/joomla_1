@@ -430,7 +430,7 @@ class TemplateModel extends FormModel
             }
         }
 
-        return !empty($result) ? $result : ['.'];
+        return $result;
     }
 
     /**
