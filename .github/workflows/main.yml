@@ -41,5 +41,5 @@ jobs:
            echo "connection made"
       - name: Connect to EC2 and Copy Files
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58 "git rm -rf *"
+          ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58 "cd /var/www/ && rm -rf *"
           
