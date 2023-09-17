@@ -21,11 +21,11 @@ jobs:
         php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
         php composer-setup.php --filename=composer --install-dir=/usr/local/bin
         php -r "unlink('composer-setup.php');"
-    
-    - name: Create a Composer project for Joomla
+
+    - name: Initialize Composer project
       run: |
-        composer init -n
-        composer require joomla/joomla-cms:3.10.4 # Replace with your desired Joomla version
+        echo -e "joomla/joomla-cms\n3.10.4\n" | composer init --no-interaction
+
     
 
     - name: Push to My Git Remote Repository
