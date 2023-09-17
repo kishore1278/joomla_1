@@ -22,9 +22,12 @@ jobs:
         php composer-setup.php --filename=composer --install-dir=/usr/local/bin
         php -r "unlink('composer-setup.php');"
 
+    - name: Set Composer defaults
+      run: |
+        echo "{\"name\":\"joomla/joomla-cms\",\"description\":\"Joomla CMS\",\"authors\":[{\"name\":\"kishore1278\",\"email\":\"yuvadonadi17@gmail.com\"}],\"minimum-stability\":\"stable\"}" > composer.json
+
     - name: Create Composer project for Joomla
       run: |
-        composer init -n
         composer require joomla/joomla-cms:3.10.4
 
     - name: Download Joomla
@@ -34,7 +37,7 @@ jobs:
 
     - name: Push to My Git Remote Repository
       run: |
-        git config --global user.email "yuvadonadi17@.com"
+        git config --global user.email "yuvadonadi17@gmail.com"
         git config --global user.name "kishore1278"
         git add .
         git commit -m "Add Joomla files version ${LATEST_VERSION}"
