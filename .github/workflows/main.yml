@@ -1,43 +1,32 @@
-name: Deploy to EC2
+name: Deploy Joomla to Azure VM
 
 on:
   push:
     branches:
-      - master
+      - main # Adjust the branch as needed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Check out code
+      uses: actions/checkout@v2
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-          extensions: 'mbstring, xml, zip, gd, pdo_mysql'
+    - name: Install unzip
+      run: sudo apt-get update && sudo apt-get install unzip -y
 
-      - name: Install Composer
-        run: |
-          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-          php composer-setup.php
-          php -r "unlink('composer-setup.php');"
+    - name: Download Joomla
+      run: |
+        wget https://github.com/joomla/joomla-cms/archive/refs/tags/${{ env.LATEST_VERSION }}.zip
+        unzip ${{ env.LATEST_VERSION }}.zip
+      env:
+        LATEST_VERSION: "4.3.1" # Update with the desired Joomla version
 
-      - name: Install Joomla Dependencies
-        run: |
-          composer install
-
-      - name: Deploy to Azure VM
-        run: |
-          ssh -vvv -o StrictHostKeyChecking=no root@52.149.213.58
-           echo "connection made"
-          script: |
-            # Clone your Joomla repository
-            git clone https://github.com/kishore1278/joomla.git /var/www/html/joomla
-            
-            # Run Joomla deployment script
-            cd /var/www/html/joomla
-            chmod +x deploy.sh
-            ./deploy.sh
+    - name: Push to My Git Remote Repository
+      run: |
+        git config --global user.email "yuvadonadi17@.com"
+        git config --global user.name "kishore1278"
+        git add .
+        git commit -m "Add Joomla files version ${LATEST_VERSION}"
+        git push origin master # Replace 'main' with your desired branch name
