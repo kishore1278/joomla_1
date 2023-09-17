@@ -29,16 +29,16 @@ jobs:
     
     - name: Download Joomla
       run: |
-        wget https://github.com/joomla/joomla-cms/archive/refs/tags/4.3.1.zip
-        unzip 4.3.1.zip
+        wget https://github.com/joomla/joomla-cms/archive/refs/tags/4.3.2.zip
+        unzip 4.3.2.zip
 
     - name: Push to My Git Remote Repository
       run: |
         git config --global user.email "yuvadonadi17@gmail.com"
         git config --global user.name "kishore1278"
         git add .
-        git commit -m "Add Joomla files version 4.3.1"
-        git push https://$GH_TOKEN@github.com/kishore1278/joomla_1.git master
+        git commit -m "Add Joomla files version 4.3.2"
+        git push https://$GH_TOKEN@github.com/kishore1278/joomla_1.git 4.3.2
       env:
         GH_TOKEN: ${{secrets.GH_TOKEN}}
 
