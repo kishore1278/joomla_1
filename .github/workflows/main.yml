@@ -16,7 +16,7 @@ jobs:
     - name: Install unzip
       run: sudo apt-get update && sudo apt-get install unzip -y
 
-    - - name: Install Composer
+    - name: Install Composer
       run: |
         php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
         php composer-setup.php --filename=composer --install-dir=/usr/local/bin
