@@ -3,7 +3,7 @@ name: Deploy Joomla to Azure VM
 on:
   push:
     branches:
-      - main # Adjust the branch as needed
+      - master
 
 jobs:
   deploy:
