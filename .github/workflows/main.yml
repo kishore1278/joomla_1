@@ -38,7 +38,7 @@ jobs:
         git config --global user.name "kishore1278"
         git add .
         git commit -m "Add Joomla files version 4.3.1"
-        git push https://$GH_TOKEN@github.com/kishore1278/joomla_1.git master
+        git push https://github.com/kishore1278/joomla_1.git master
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
